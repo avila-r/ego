@@ -1,6 +1,7 @@
 # Architecture Overview
 
 Ego groups small, orthogonal generic helpers:
+
 - Value containers: `box`, `optional`, `result`
 - Async orchestration: `promise`
 - Collections & iteration: `collection`, `list`, `slice`, `iterator`, `stream`
