@@ -28,52 +28,68 @@ func Error[T any](err error) Result[T] {
 	}
 }
 
-func Err[T any](err error) Result[T] {
+func Failure[T any](err error) Result[T] {
 	return Error[T](err)
 }
 
-func (r Result[T]) Value() *T {
+func (r *Result[T]) Value() *T {
 	return r.value
 }
 
-func (r Result[T]) Error() error {
+func (r *Result[T]) Error() error {
 	if r.err == nil && r.IsEmpty() {
 		return ErrEmptyResult
 	}
 	return r.err
 }
 
-func (r Result[T]) IsEmpty() bool {
+func (r *Result[T]) Success(t T) Result[T] {
+	r.value, r.err = &t, nil
+	return *r
+}
+
+func (r *Result[T]) Ok(t T) Result[T] {
+	r.value, r.err = &t, nil
+	return *r
+}
+
+func (r *Result[T]) Failure(err error) Result[T] {
+	r.err, r.value = err, nil
+	return *r
+}
+
+func (r *Result[T]) IsEmpty() bool {
 	return r.value == nil
 }
 
-func (r Result[T]) IsSuccess() bool {
+func (r *Result[T]) IsSuccess() bool {
 	return r.Error() == nil && r.value != nil
 }
 
-func (r Result[T]) IsError() bool {
+func (r *Result[T]) IsError() bool {
 	return r.Error() != nil || r.value == nil
 }
 
-func (r Result[T]) Unwrap() T {
+func (r *Result[T]) Unwrap() T {
 	return *r.value
 }
 
-func (o Result[T]) Take() (*T, *failure.Error) {
+func (o *Result[T]) Take() (*T, *failure.Error) {
 	if o.IsEmpty() {
+		println("taking from empty result")
 		return nil, ErrNoneValueTaken
 	}
 	return o.value, nil
 }
 
-func (r Result[T]) Join() T {
+func (r *Result[T]) Join() T {
 	if r.IsError() {
 		panic(r.Error())
 	}
 	return *r.value
 }
 
-func (r Result[T]) Expect(message ...string) T {
+func (r *Result[T]) Expect(message ...string) T {
 	var msg string
 	if len(message) > 0 {
 		msg = message[0]
