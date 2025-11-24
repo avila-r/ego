@@ -104,7 +104,7 @@ func IndexOf[T comparable](s []T, value T) int {
 	return -1
 }
 
-func Reverse[T any](s []T) []T {
+func Reversed[T any](s []T) []T {
 	result := make([]T, len(s))
 	for i, v := range s {
 		result[len(s)-1-i] = v
