@@ -103,7 +103,7 @@
 				
 				<option value="file23">github.com/avila-r/ego/result/result.go (0.0%)</option>
 				
-				<option value="file24">github.com/avila-r/ego/slice/slice.go (0.0%)</option>
+				<option value="file24">github.com/avila-r/ego/slice/slice.go (100.0%)</option>
 				
 				<option value="file25">github.com/avila-r/ego/stream/stream.go (0.0%)</option>
 				
@@ -2791,130 +2791,130 @@ import (
         "github.com/avila-r/ego/stream"
 )
 
-func Of[T any](values ...T) []T <span class="cov0" title="0">{
+func Of[T any](values ...T) []T <span class="cov6" title="8">{
         return values
 }</span>
 
-func New[T any]() []T <span class="cov0" title="0">{
+func New[T any]() []T <span class="cov2" title="2">{
         return []T{}
 }</span>
 
-func Empty[T any]() []T <span class="cov0" title="0">{
+func Empty[T any]() []T <span class="cov1" title="1">{
         return New[T]()
 }</span>
 
-func Append[T any](at []T, t ...T) []T <span class="cov0" title="0">{
+func Append[T any](at []T, t ...T) []T <span class="cov4" title="4">{
         return append(at, t...)
 }</span>
 
-func Add[T any](at *[]T, t ...T) <span class="cov0" title="0">{
+func Add[T any](at *[]T, t ...T) <span class="cov4" title="4">{
         *at = append(*at, t...)
 }</span>
 
-func Filter[S ~[]E, E any](values S, filter func(v E) bool) S <span class="cov0" title="0">{
+func Filter[S ~[]E, E any](values S, filter func(v E) bool) S <span class="cov6" title="8">{
         result := S{}
 
-        for _, v := range values </span><span class="cov0" title="0">{
-                if filter(v) </span><span class="cov0" title="0">{
+        for _, v := range values </span><span class="cov10" title="36">{
+                if filter(v) </span><span class="cov8" title="18">{
                         result = append(result, v)
                 }</span>
         }
 
-        <span class="cov0" title="0">return result</span>
+        <span class="cov6" title="8">return result</span>
 }
 
-func IsEmpty[T any](t []T) bool <span class="cov0" title="0">{
+func IsEmpty[T any](t []T) bool <span class="cov7" title="11">{
         return len(t) == 0
 }</span>
 
-func First[T any](t []T) optional.Optional[T] <span class="cov0" title="0">{
+func First[T any](t []T) optional.Optional[T] <span class="cov3" title="3">{
         return optional.Of(t[0])
 }</span>
 
-func Last[T any](t []T) optional.Optional[T] <span class="cov0" title="0">{
-        if IsEmpty(t) </span><span class="cov0" title="0">{
+func Last[T any](t []T) optional.Optional[T] <span class="cov3" title="3">{
+        if IsEmpty(t) </span><span class="cov1" title="1">{
                 return optional.Empty[T]()
         }</span>
 
-        <span class="cov0" title="0">v := t[len(t)-1]
+        <span class="cov2" title="2">v := t[len(t)-1]
 
         return optional.Of(v)</span>
 }
 
-func Size[T any](t []T) int <span class="cov0" title="0">{
+func Size[T any](t []T) int <span class="cov4" title="4">{
         return len(t)
 }</span>
 
-func IsNil[T any](t []T) bool <span class="cov0" title="0">{
+func IsNil[T any](t []T) bool <span class="cov5" title="5">{
         return t == nil
 }</span>
 
-func Stream[T comparable](t []T) stream.Stream[T] <span class="cov0" title="0">{
+func Stream[T comparable](t []T) stream.Stream[T] <span class="cov1" title="1">{
         return stream.Of(t...)
 }</span>
 
-func ForEach[T any](s []T, f func(T)) <span class="cov0" title="0">{
-        for _, v := range s </span><span class="cov0" title="0">{
+func ForEach[T any](s []T, f func(T)) <span class="cov3" title="3">{
+        for _, v := range s </span><span class="cov6" title="8">{
                 f(v)
         }</span>
 }
 
-func Map[T any, R any](s []T, mapper func(T) R) []R <span class="cov0" title="0">{
+func Map[T any, R any](s []T, mapper func(T) R) []R <span class="cov6" title="9">{
         result := make([]R, len(s))
-        for i, v := range s </span><span class="cov0" title="0">{
+        for i, v := range s </span><span class="cov9" title="31">{
                 result[i] = mapper(v)
         }</span>
-        <span class="cov0" title="0">return result</span>
+        <span class="cov6" title="9">return result</span>
 }
 
-func Reduce[T any, R any](s []T, initial R, reducer func(R, T) R) R <span class="cov0" title="0">{
+func Reduce[T any, R any](s []T, initial R, reducer func(R, T) R) R <span class="cov5" title="7">{
         acc := initial
-        for _, v := range s </span><span class="cov0" title="0">{
+        for _, v := range s </span><span class="cov9" title="25">{
                 acc = reducer(acc, v)
         }</span>
-        <span class="cov0" title="0">return acc</span>
+        <span class="cov5" title="7">return acc</span>
 }
 
-func Contains[T comparable](s []T, value T) bool <span class="cov0" title="0">{
+func Contains[T comparable](s []T, value T) bool <span class="cov5" title="5">{
         return slices.Contains(s, value)
 }</span>
 
-func IndexOf[T comparable](s []T, value T) int <span class="cov0" title="0">{
-        for i, v := range s </span><span class="cov0" title="0">{
-                if v == value </span><span class="cov0" title="0">{
+func IndexOf[T comparable](s []T, value T) int <span class="cov5" title="6">{
+        for i, v := range s </span><span class="cov7" title="16">{
+                if v == value </span><span class="cov4" title="4">{
                         return i
                 }</span>
         }
-        <span class="cov0" title="0">return -1</span>
+        <span class="cov2" title="2">return -1</span>
 }
 
-func Reverse[T any](s []T) []T <span class="cov0" title="0">{
+func Reversed[T any](s []T) []T <span class="cov6" title="8">{
         result := make([]T, len(s))
-        for i, v := range s </span><span class="cov0" title="0">{
+        for i, v := range s </span><span class="cov9" title="25">{
                 result[len(s)-1-i] = v
         }</span>
-        <span class="cov0" title="0">return result</span>
+        <span class="cov6" title="8">return result</span>
 }
 
-func Clone[T any](s []T) []T <span class="cov0" title="0">{
+func Clone[T any](s []T) []T <span class="cov4" title="4">{
         result := make([]T, len(s))
         copy(result, s)
         return result
 }</span>
 
-func Unique[T comparable](s []T) []T <span class="cov0" title="0">{
+func Unique[T comparable](s []T) []T <span class="cov5" title="6">{
         seen := map[T]struct{}{}
         result := []T{}
-        for _, v := range s </span><span class="cov0" title="0">{
-                if _, ok := seen[v]; !ok </span><span class="cov0" title="0">{
+        for _, v := range s </span><span class="cov9" title="25">{
+                if _, ok := seen[v]; !ok </span><span class="cov8" title="17">{
                         seen[v] = struct{}{}
                         result = append(result, v)
                 }</span>
         }
-        <span class="cov0" title="0">return result</span>
+        <span class="cov5" title="6">return result</span>
 }
 
-func Clear[T any](s *[]T) <span class="cov0" title="0">{
+func Clear[T any](s *[]T) <span class="cov3" title="3">{
         *s = (*s)[:0]
 }</span>
 </pre>
