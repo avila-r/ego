@@ -475,7 +475,6 @@ func Test_Equals(t *testing.T) {
 
 	cases := []Case{
 		{"same instance", box.Of(42), box.Of(42), true},
-		{"equal present boxes", box.Of(42), box.Of(42), true},
 		{"different present boxes", box.Of(42), box.Of(10), false},
 		{"both empty boxes", box.Empty[int](), box.Empty[int](), true},
 		{"present and empty box", box.Of(42), box.Empty[int](), false},
