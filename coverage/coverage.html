@@ -55,9 +55,9 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/avila-r/ego/box/box.go (0.0%)</option>
+				<option value="file0">github.com/avila-r/ego/box/box.go (100.0%)</option>
 				
-				<option value="file1">github.com/avila-r/ego/box/toolkit.go (0.0%)</option>
+				<option value="file1">github.com/avila-r/ego/box/toolkit.go (100.0%)</option>
 				
 				<option value="file2">github.com/avila-r/ego/collection/collection.go (0.0%)</option>
 				
@@ -141,44 +141,44 @@ type Box[T any] struct {
 }
 
 // Get returns the value or nil if empty
-func (b *Box[T]) Get() *T <span class="cov0" title="0">{
+func (b *Box[T]) Get() *T <span class="cov10" title="42">{
         return b.value
 }</span>
 
 // GetOrDefault returns the value or a default if empty
-func (b *Box[T]) GetOrDefault(defaultValue T) T <span class="cov0" title="0">{
-        if b.present </span><span class="cov0" title="0">{
+func (b *Box[T]) GetOrDefault(defaultValue T) T <span class="cov3" title="3">{
+        if b.present </span><span class="cov1" title="1">{
                 return *b.value
         }</span>
-        <span class="cov0" title="0">return defaultValue</span>
+        <span class="cov2" title="2">return defaultValue</span>
 }
 
 // With sets a new value and returns the Box
-func (b *Box[T]) With(value T) *Box[T] <span class="cov0" title="0">{
+func (b *Box[T]) With(value T) *Box[T] <span class="cov3" title="3">{
         b.value = &amp;value
         b.present = true
         return b
 }</span>
 
 // Peek executes the action if a value is present and returns the Box
-func (b *Box[T]) Peek(action func(T)) *Box[T] <span class="cov0" title="0">{
-        if b.IsPresent() </span><span class="cov0" title="0">{
+func (b *Box[T]) Peek(action func(T)) *Box[T] <span class="cov3" title="3">{
+        if b.IsPresent() </span><span class="cov2" title="2">{
                 action(*b.value)
         }</span>
-        <span class="cov0" title="0">return b</span>
+        <span class="cov3" title="3">return b</span>
 }
 
 // Then applies a mapper function and updates the Box value
-func (b *Box[T]) Then(mapper func(T) T) *Box[T] <span class="cov0" title="0">{
-        if b.present </span><span class="cov0" title="0">{
+func (b *Box[T]) Then(mapper func(T) T) *Box[T] <span class="cov8" title="25">{
+        if b.present </span><span class="cov8" title="22">{
                 newValue := mapper(*b.value)
                 b.value = &amp;newValue
         }</span>
-        <span class="cov0" title="0">return b</span>
+        <span class="cov8" title="25">return b</span>
 }
 
 // ThenSupplier sets the value from a supplier function
-func (b *Box[T]) ThenSupplier(supplier func() T) *Box[T] <span class="cov0" title="0">{
+func (b *Box[T]) ThenSupplier(supplier func() T) *Box[T] <span class="cov2" title="2">{
         newValue := supplier()
         b.value = &amp;newValue
         b.present = true
@@ -186,117 +186,117 @@ func (b *Box[T]) ThenSupplier(supplier func() T) *Box[T] <span class="cov0" titl
 }</span>
 
 // ThenConsumer executes the action if a value is present
-func (b *Box[T]) ThenConsumer(action func(T)) *Box[T] <span class="cov0" title="0">{
-        if b.IsPresent() </span><span class="cov0" title="0">{
+func (b *Box[T]) ThenConsumer(action func(T)) *Box[T] <span class="cov2" title="2">{
+        if b.IsPresent() </span><span class="cov1" title="1">{
                 action(*b.value)
         }</span>
-        <span class="cov0" title="0">return b</span>
+        <span class="cov2" title="2">return b</span>
 }
 
 // Filter returns this Box if the predicate matches, otherwise returns empty Box
-func (b *Box[T]) Filter(predicate func(T) bool) *Box[T] <span class="cov0" title="0">{
-        if b.IsPresent() &amp;&amp; predicate(*b.value) </span><span class="cov0" title="0">{
+func (b *Box[T]) Filter(predicate func(T) bool) *Box[T] <span class="cov4" title="5">{
+        if b.IsPresent() &amp;&amp; predicate(*b.value) </span><span class="cov2" title="2">{
                 return b
         }</span>
-        <span class="cov0" title="0">return Empty[T]()</span>
+        <span class="cov3" title="3">return Empty[T]()</span>
 }
 
 // Map transforms the value using the mapper function
-func Map[T, R any](b *Box[T], mapper func(T) R) *Box[R] <span class="cov0" title="0">{
-        if b.IsPresent() </span><span class="cov0" title="0">{
+func Map[T, R any](b *Box[T], mapper func(T) R) *Box[R] <span class="cov2" title="2">{
+        if b.IsPresent() </span><span class="cov1" title="1">{
                 return Of(mapper(*b.value))
         }</span>
-        <span class="cov0" title="0">return Empty[R]()</span>
+        <span class="cov1" title="1">return Empty[R]()</span>
 }
 
 // FlatMap transforms the value and flattens the result
-func FlatMap[T, R any](b *Box[T], mapper func(T) *Box[R]) *Box[R] <span class="cov0" title="0">{
-        if b.IsPresent() </span><span class="cov0" title="0">{
+func FlatMap[T, R any](b *Box[T], mapper func(T) *Box[R]) *Box[R] <span class="cov3" title="3">{
+        if b.IsPresent() </span><span class="cov2" title="2">{
                 return mapper(*b.value)
         }</span>
-        <span class="cov0" title="0">return Empty[R]()</span>
+        <span class="cov1" title="1">return Empty[R]()</span>
 }
 
 // Deflated clears the value and returns the Box
-func (b *Box[T]) Deflated() *Box[T] <span class="cov0" title="0">{
+func (b *Box[T]) Deflated() *Box[T] <span class="cov2" title="2">{
         b.value = nil
         b.present = false
         return b
 }</span>
 
 // Copy creates a shallow copy of the Box
-func (b *Box[T]) Copy() *Box[T] <span class="cov0" title="0">{
-        if b.IsPresent() </span><span class="cov0" title="0">{
+func (b *Box[T]) Copy() *Box[T] <span class="cov3" title="3">{
+        if b.IsPresent() </span><span class="cov2" title="2">{
                 return Of(*b.value)
         }</span>
-        <span class="cov0" title="0">return Empty[T]()</span>
+        <span class="cov1" title="1">return Empty[T]()</span>
 }
 
 // IsPresent returns true if the Box contains a value
-func (b *Box[T]) IsPresent() bool <span class="cov0" title="0">{
+func (b *Box[T]) IsPresent() bool <span class="cov9" title="35">{
         return b.present
 }</span>
 
 // IsEmpty returns true if the Box is empty
-func (b *Box[T]) IsEmpty() bool <span class="cov0" title="0">{
+func (b *Box[T]) IsEmpty() bool <span class="cov8" title="20">{
         return !b.present
 }</span>
 
 // Set updates the Box value
-func (b *Box[T]) Set(value T) <span class="cov0" title="0">{
+func (b *Box[T]) Set(value T) <span class="cov4" title="4">{
         b.value = &amp;value
         b.present = true
 }</span>
 
 // Deflate clears the Box value
-func (b *Box[T]) Deflate() <span class="cov0" title="0">{
+func (b *Box[T]) Deflate() <span class="cov2" title="2">{
         b.value = nil
         b.present = false
 }</span>
 
 // IfPresent executes the action if a value is present
-func (b *Box[T]) IfPresent(action func(T)) <span class="cov0" title="0">{
-        if b.IsPresent() </span><span class="cov0" title="0">{
+func (b *Box[T]) IfPresent(action func(T)) <span class="cov2" title="2">{
+        if b.IsPresent() </span><span class="cov1" title="1">{
                 action(*b.value)
         }</span>
 }
 
 // String returns a string representation of the Box
-func (b *Box[T]) String() string <span class="cov0" title="0">{
-        if b.IsEmpty() </span><span class="cov0" title="0">{
+func (b *Box[T]) String() string <span class="cov3" title="3">{
+        if b.IsEmpty() </span><span class="cov1" title="1">{
                 return "Box(&lt;empty&gt;)"
         }</span>
-        <span class="cov0" title="0">return fmt.Sprintf("Box(%v)", *b.value)</span>
+        <span class="cov2" title="2">return fmt.Sprintf("Box(%v)", *b.value)</span>
 }
 
 // Equals checks if two Boxes are equal
-func (b *Box[T]) Equals(other *Box[T]) bool <span class="cov0" title="0">{
-        if b == other </span><span class="cov0" title="0">{
+func (b *Box[T]) Equals(other *Box[T]) bool <span class="cov5" title="7">{
+        if b == other </span><span class="cov1" title="1">{
                 return true
         }</span>
 
-        <span class="cov0" title="0">if other == nil </span><span class="cov0" title="0">{
+        <span class="cov5" title="6">if other == nil </span><span class="cov1" title="1">{
                 return false
         }</span>
 
-        <span class="cov0" title="0">if b.present != other.present </span><span class="cov0" title="0">{
+        <span class="cov4" title="5">if b.present != other.present </span><span class="cov2" title="2">{
                 return false
         }</span>
 
-        <span class="cov0" title="0">if !b.present </span><span class="cov0" title="0">{
+        <span class="cov3" title="3">if !b.present </span><span class="cov1" title="1">{
                 return true
         }</span>
 
         // Note: This uses == which works for comparable types
         // For non-comparable types, you'd need to pass a custom comparator
-        <span class="cov0" title="0">return fmt.Sprintf("%v", *b.value) == fmt.Sprintf("%v", *other.value)</span>
+        <span class="cov2" title="2">return fmt.Sprintf("%v", *b.value) == fmt.Sprintf("%v", *other.value)</span>
 }
 </pre>
 		
 		<pre class="file" id="file1" style="display: none">package box
 
 // Of creates a new Box containing the given value
-func Of[T any](value T) *Box[T] <span class="cov0" title="0">{
+func Of[T any](value T) *Box[T] <span class="cov9" title="52">{
         return &amp;Box[T]{
                 value:   &amp;value,
                 present: true,
@@ -304,7 +304,7 @@ func Of[T any](value T) *Box[T] <span class="cov0" title="0">{
 }</span>
 
 // Empty creates a new empty Box
-func Empty[T any]() *Box[T] <span class="cov0" title="0">{
+func Empty[T any]() *Box[T] <span class="cov8" title="31">{
         return &amp;Box[T]{
                 value:   nil,
                 present: false,
@@ -312,98 +312,98 @@ func Empty[T any]() *Box[T] <span class="cov0" title="0">{
 }</span>
 
 // Integer helper functions
-func fromInt(v *int) int <span class="cov0" title="0">{
-        if v == nil </span><span class="cov0" title="0">{
+func fromInt(v *int) int <span class="cov10" title="69">{
+        if v == nil </span><span class="cov6" title="11">{
                 return 0
         }</span>
-        <span class="cov0" title="0">return *v</span>
+        <span class="cov9" title="58">return *v</span>
 }
 
 // Increment returns a function that increments an integer by 1
-func Increment() func(*int) int <span class="cov0" title="0">{
-        return func(v *int) int </span><span class="cov0" title="0">{
+func Increment() func(*int) int <span class="cov5" title="7">{
+        return func(v *int) int </span><span class="cov5" title="7">{
                 return fromInt(v) + 1
         }</span>
 }
 
 // Decrement returns a function that decrements an integer by 1
-func Decrement() func(*int) int <span class="cov0" title="0">{
-        return func(v *int) int </span><span class="cov0" title="0">{
+func Decrement() func(*int) int <span class="cov4" title="5">{
+        return func(v *int) int </span><span class="cov4" title="5">{
                 return fromInt(v) - 1
         }</span>
 }
 
 // Square returns a function that squares an integer
-func Square() func(*int) int <span class="cov0" title="0">{
-        return func(v *int) int </span><span class="cov0" title="0">{
+func Square() func(*int) int <span class="cov5" title="8">{
+        return func(v *int) int </span><span class="cov5" title="8">{
                 x := fromInt(v)
                 return x * x
         }</span>
 }
 
 // Cube returns a function that cubes an integer
-func Cube() func(*int) int <span class="cov0" title="0">{
-        return func(v *int) int </span><span class="cov0" title="0">{
+func Cube() func(*int) int <span class="cov4" title="5">{
+        return func(v *int) int </span><span class="cov4" title="5">{
                 x := fromInt(v)
                 return x * x * x
         }</span>
 }
 
 // Twice returns a function that doubles an integer
-func Twice() func(*int) int <span class="cov0" title="0">{
-        return func(v *int) int </span><span class="cov0" title="0">{
+func Twice() func(*int) int <span class="cov5" title="7">{
+        return func(v *int) int </span><span class="cov5" title="7">{
                 return fromInt(v) * 2
         }</span>
 }
 
 // Halve returns a function that halves an integer
-func Halve() func(*int) int <span class="cov0" title="0">{
-        return func(v *int) int </span><span class="cov0" title="0">{
+func Halve() func(*int) int <span class="cov5" title="7">{
+        return func(v *int) int </span><span class="cov5" title="7">{
                 return fromInt(v) / 2
         }</span>
 }
 
 // Negate returns a function that negates an integer
-func Negate() func(*int) int <span class="cov0" title="0">{
-        return func(v *int) int </span><span class="cov0" title="0">{
+func Negate() func(*int) int <span class="cov4" title="5">{
+        return func(v *int) int </span><span class="cov4" title="5">{
                 return -fromInt(v)
         }</span>
 }
 
 // Abs returns a function that returns the absolute value of an integer
-func Abs() func(*int) int <span class="cov0" title="0">{
-        return func(v *int) int </span><span class="cov0" title="0">{
+func Abs() func(*int) int <span class="cov4" title="5">{
+        return func(v *int) int </span><span class="cov4" title="5">{
                 x := fromInt(v)
-                if x &lt; 0 </span><span class="cov0" title="0">{
+                if x &lt; 0 </span><span class="cov2" title="2">{
                         return -x
                 }</span>
-                <span class="cov0" title="0">return x</span>
+                <span class="cov3" title="3">return x</span>
         }
 }
 
 // Identity returns a function that returns the integer as-is
-func Identity() func(*int) int <span class="cov0" title="0">{
+func Identity() func(*int) int <span class="cov3" title="4">{
         return fromInt
 }</span>
 
 // Modulo returns a function that computes v % m
-func Modulo(m int) func(*int) int <span class="cov0" title="0">{
-        return func(v *int) int </span><span class="cov0" title="0">{
+func Modulo(m int) func(*int) int <span class="cov5" title="7">{
+        return func(v *int) int </span><span class="cov5" title="7">{
                 return fromInt(v) % m
         }</span>
 }
 
 // Clamp returns a function that clamps an integer between min and max
-func Clamp(min, max int) func(*int) int <span class="cov0" title="0">{
-        return func(v *int) int </span><span class="cov0" title="0">{
+func Clamp(min, max int) func(*int) int <span class="cov5" title="9">{
+        return func(v *int) int </span><span class="cov5" title="9">{
                 x := fromInt(v)
-                if x &lt; min </span><span class="cov0" title="0">{
+                if x &lt; min </span><span class="cov3" title="4">{
                         return min
                 }</span>
-                <span class="cov0" title="0">if x &gt; max </span><span class="cov0" title="0">{
+                <span class="cov4" title="5">if x &gt; max </span><span class="cov3" title="3">{
                         return max
                 }</span>
-                <span class="cov0" title="0">return x</span>
+                <span class="cov2" title="2">return x</span>
         }
 }
 </pre>
