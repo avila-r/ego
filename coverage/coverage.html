@@ -1,0 +1,2966 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>box: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/avila-r/ego/box/box.go (0.0%)</option>
+				
+				<option value="file1">github.com/avila-r/ego/box/toolkit.go (0.0%)</option>
+				
+				<option value="file2">github.com/avila-r/ego/collection/collection.go (0.0%)</option>
+				
+				<option value="file3">github.com/avila-r/ego/dotenv/dotenv.go (0.0%)</option>
+				
+				<option value="file4">github.com/avila-r/ego/dotenv/load.go (0.0%)</option>
+				
+				<option value="file5">github.com/avila-r/ego/dotenv/parser.go (0.0%)</option>
+				
+				<option value="file6">github.com/avila-r/ego/env/dotenv.go (0.0%)</option>
+				
+				<option value="file7">github.com/avila-r/ego/env/struct.go (0.0%)</option>
+				
+				<option value="file8">github.com/avila-r/ego/httpx/body.go (0.0%)</option>
+				
+				<option value="file9">github.com/avila-r/ego/httpx/get.go (0.0%)</option>
+				
+				<option value="file10">github.com/avila-r/ego/httpx/header.go (0.0%)</option>
+				
+				<option value="file11">github.com/avila-r/ego/httpx/protocol.go (0.0%)</option>
+				
+				<option value="file12">github.com/avila-r/ego/httpx/request.go (0.0%)</option>
+				
+				<option value="file13">github.com/avila-r/ego/httpx/response.go (0.0%)</option>
+				
+				<option value="file14">github.com/avila-r/ego/httpx/status.go (0.0%)</option>
+				
+				<option value="file15">github.com/avila-r/ego/iterator/iterator.go (0.0%)</option>
+				
+				<option value="file16">github.com/avila-r/ego/list/array_list.go (72.0%)</option>
+				
+				<option value="file17">github.com/avila-r/ego/list/constructs.go (0.0%)</option>
+				
+				<option value="file18">github.com/avila-r/ego/optional/optional.go (0.0%)</option>
+				
+				<option value="file19">github.com/avila-r/ego/pointer/pointer.go (0.0%)</option>
+				
+				<option value="file20">github.com/avila-r/ego/promise/promise.go (69.4%)</option>
+				
+				<option value="file21">github.com/avila-r/ego/promise/status.go (0.0%)</option>
+				
+				<option value="file22">github.com/avila-r/ego/promise/type.go (100.0%)</option>
+				
+				<option value="file23">github.com/avila-r/ego/result/result.go (0.0%)</option>
+				
+				<option value="file24">github.com/avila-r/ego/slice/slice.go (0.0%)</option>
+				
+				<option value="file25">github.com/avila-r/ego/stream/stream.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package box
+
+import (
+        "fmt"
+)
+
+// Box is a generic container that may or may not hold a value
+type Box[T any] struct {
+        value   *T
+        present bool
+}
+
+// Get returns the value or nil if empty
+func (b *Box[T]) Get() *T <span class="cov0" title="0">{
+        return b.value
+}</span>
+
+// GetOrDefault returns the value or a default if empty
+func (b *Box[T]) GetOrDefault(defaultValue T) T <span class="cov0" title="0">{
+        if b.present </span><span class="cov0" title="0">{
+                return *b.value
+        }</span>
+        <span class="cov0" title="0">return defaultValue</span>
+}
+
+// With sets a new value and returns the Box
+func (b *Box[T]) With(value T) *Box[T] <span class="cov0" title="0">{
+        b.value = &amp;value
+        b.present = true
+        return b
+}</span>
+
+// Peek executes the action if a value is present and returns the Box
+func (b *Box[T]) Peek(action func(T)) *Box[T] <span class="cov0" title="0">{
+        if b.IsPresent() </span><span class="cov0" title="0">{
+                action(*b.value)
+        }</span>
+        <span class="cov0" title="0">return b</span>
+}
+
+// Then applies a mapper function and updates the Box value
+func (b *Box[T]) Then(mapper func(T) T) *Box[T] <span class="cov0" title="0">{
+        if b.present </span><span class="cov0" title="0">{
+                newValue := mapper(*b.value)
+                b.value = &amp;newValue
+        }</span>
+        <span class="cov0" title="0">return b</span>
+}
+
+// ThenSupplier sets the value from a supplier function
+func (b *Box[T]) ThenSupplier(supplier func() T) *Box[T] <span class="cov0" title="0">{
+        newValue := supplier()
+        b.value = &amp;newValue
+        b.present = true
+        return b
+}</span>
+
+// ThenConsumer executes the action if a value is present
+func (b *Box[T]) ThenConsumer(action func(T)) *Box[T] <span class="cov0" title="0">{
+        if b.IsPresent() </span><span class="cov0" title="0">{
+                action(*b.value)
+        }</span>
+        <span class="cov0" title="0">return b</span>
+}
+
+// Filter returns this Box if the predicate matches, otherwise returns empty Box
+func (b *Box[T]) Filter(predicate func(T) bool) *Box[T] <span class="cov0" title="0">{
+        if b.IsPresent() &amp;&amp; predicate(*b.value) </span><span class="cov0" title="0">{
+                return b
+        }</span>
+        <span class="cov0" title="0">return Empty[T]()</span>
+}
+
+// Map transforms the value using the mapper function
+func Map[T, R any](b *Box[T], mapper func(T) R) *Box[R] <span class="cov0" title="0">{
+        if b.IsPresent() </span><span class="cov0" title="0">{
+                return Of(mapper(*b.value))
+        }</span>
+        <span class="cov0" title="0">return Empty[R]()</span>
+}
+
+// FlatMap transforms the value and flattens the result
+func FlatMap[T, R any](b *Box[T], mapper func(T) *Box[R]) *Box[R] <span class="cov0" title="0">{
+        if b.IsPresent() </span><span class="cov0" title="0">{
+                return mapper(*b.value)
+        }</span>
+        <span class="cov0" title="0">return Empty[R]()</span>
+}
+
+// Deflated clears the value and returns the Box
+func (b *Box[T]) Deflated() *Box[T] <span class="cov0" title="0">{
+        b.value = nil
+        b.present = false
+        return b
+}</span>
+
+// Copy creates a shallow copy of the Box
+func (b *Box[T]) Copy() *Box[T] <span class="cov0" title="0">{
+        if b.IsPresent() </span><span class="cov0" title="0">{
+                return Of(*b.value)
+        }</span>
+        <span class="cov0" title="0">return Empty[T]()</span>
+}
+
+// IsPresent returns true if the Box contains a value
+func (b *Box[T]) IsPresent() bool <span class="cov0" title="0">{
+        return b.present
+}</span>
+
+// IsEmpty returns true if the Box is empty
+func (b *Box[T]) IsEmpty() bool <span class="cov0" title="0">{
+        return !b.present
+}</span>
+
+// Set updates the Box value
+func (b *Box[T]) Set(value T) <span class="cov0" title="0">{
+        b.value = &amp;value
+        b.present = true
+}</span>
+
+// Deflate clears the Box value
+func (b *Box[T]) Deflate() <span class="cov0" title="0">{
+        b.value = nil
+        b.present = false
+}</span>
+
+// IfPresent executes the action if a value is present
+func (b *Box[T]) IfPresent(action func(T)) <span class="cov0" title="0">{
+        if b.IsPresent() </span><span class="cov0" title="0">{
+                action(*b.value)
+        }</span>
+}
+
+// String returns a string representation of the Box
+func (b *Box[T]) String() string <span class="cov0" title="0">{
+        if b.IsEmpty() </span><span class="cov0" title="0">{
+                return "Box(&lt;empty&gt;)"
+        }</span>
+        <span class="cov0" title="0">return fmt.Sprintf("Box(%v)", *b.value)</span>
+}
+
+// Equals checks if two Boxes are equal
+func (b *Box[T]) Equals(other *Box[T]) bool <span class="cov0" title="0">{
+        if b == other </span><span class="cov0" title="0">{
+                return true
+        }</span>
+
+        <span class="cov0" title="0">if other == nil </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">if b.present != other.present </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov0" title="0">if !b.present </span><span class="cov0" title="0">{
+                return true
+        }</span>
+
+        // Note: This uses == which works for comparable types
+        // For non-comparable types, you'd need to pass a custom comparator
+        <span class="cov0" title="0">return fmt.Sprintf("%v", *b.value) == fmt.Sprintf("%v", *other.value)</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package box
+
+// Of creates a new Box containing the given value
+func Of[T any](value T) *Box[T] <span class="cov0" title="0">{
+        return &amp;Box[T]{
+                value:   &amp;value,
+                present: true,
+        }
+}</span>
+
+// Empty creates a new empty Box
+func Empty[T any]() *Box[T] <span class="cov0" title="0">{
+        return &amp;Box[T]{
+                value:   nil,
+                present: false,
+        }
+}</span>
+
+// Integer helper functions
+func fromInt(v *int) int <span class="cov0" title="0">{
+        if v == nil </span><span class="cov0" title="0">{
+                return 0
+        }</span>
+        <span class="cov0" title="0">return *v</span>
+}
+
+// Increment returns a function that increments an integer by 1
+func Increment() func(*int) int <span class="cov0" title="0">{
+        return func(v *int) int </span><span class="cov0" title="0">{
+                return fromInt(v) + 1
+        }</span>
+}
+
+// Decrement returns a function that decrements an integer by 1
+func Decrement() func(*int) int <span class="cov0" title="0">{
+        return func(v *int) int </span><span class="cov0" title="0">{
+                return fromInt(v) - 1
+        }</span>
+}
+
+// Square returns a function that squares an integer
+func Square() func(*int) int <span class="cov0" title="0">{
+        return func(v *int) int </span><span class="cov0" title="0">{
+                x := fromInt(v)
+                return x * x
+        }</span>
+}
+
+// Cube returns a function that cubes an integer
+func Cube() func(*int) int <span class="cov0" title="0">{
+        return func(v *int) int </span><span class="cov0" title="0">{
+                x := fromInt(v)
+                return x * x * x
+        }</span>
+}
+
+// Twice returns a function that doubles an integer
+func Twice() func(*int) int <span class="cov0" title="0">{
+        return func(v *int) int </span><span class="cov0" title="0">{
+                return fromInt(v) * 2
+        }</span>
+}
+
+// Halve returns a function that halves an integer
+func Halve() func(*int) int <span class="cov0" title="0">{
+        return func(v *int) int </span><span class="cov0" title="0">{
+                return fromInt(v) / 2
+        }</span>
+}
+
+// Negate returns a function that negates an integer
+func Negate() func(*int) int <span class="cov0" title="0">{
+        return func(v *int) int </span><span class="cov0" title="0">{
+                return -fromInt(v)
+        }</span>
+}
+
+// Abs returns a function that returns the absolute value of an integer
+func Abs() func(*int) int <span class="cov0" title="0">{
+        return func(v *int) int </span><span class="cov0" title="0">{
+                x := fromInt(v)
+                if x &lt; 0 </span><span class="cov0" title="0">{
+                        return -x
+                }</span>
+                <span class="cov0" title="0">return x</span>
+        }
+}
+
+// Identity returns a function that returns the integer as-is
+func Identity() func(*int) int <span class="cov0" title="0">{
+        return fromInt
+}</span>
+
+// Modulo returns a function that computes v % m
+func Modulo(m int) func(*int) int <span class="cov0" title="0">{
+        return func(v *int) int </span><span class="cov0" title="0">{
+                return fromInt(v) % m
+        }</span>
+}
+
+// Clamp returns a function that clamps an integer between min and max
+func Clamp(min, max int) func(*int) int <span class="cov0" title="0">{
+        return func(v *int) int </span><span class="cov0" title="0">{
+                x := fromInt(v)
+                if x &lt; min </span><span class="cov0" title="0">{
+                        return min
+                }</span>
+                <span class="cov0" title="0">if x &gt; max </span><span class="cov0" title="0">{
+                        return max
+                }</span>
+                <span class="cov0" title="0">return x</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package collection
+
+type Collection[T any] interface {
+        Add(elements ...T)
+        Get(index int) (T, bool)
+        Remove(index int) bool
+        Size() int
+        IsEmpty() bool
+        Clear()
+        ForEach(action func(T))
+        Clone() Collection[T]
+        Elements() []T
+}
+
+// DefaultCollection is a simple slice-backed implementation of Collection
+type DefaultCollection[T any] struct {
+        elements []T
+}
+
+// Ensure DefaultCollection implements Collection
+var _ Collection[int] = (*DefaultCollection[int])(nil)
+
+// New creates a new collection with the provided elements
+func New[T any](items ...T) *DefaultCollection[T] <span class="cov0" title="0">{
+        return &amp;DefaultCollection[T]{
+                elements: items,
+        }
+}</span>
+
+// Empty creates a new empty collection
+func Empty[T any]() *DefaultCollection[T] <span class="cov0" title="0">{
+        return &amp;DefaultCollection[T]{
+                elements: []T{},
+        }
+}</span>
+
+// Add appends elements to the collection
+func (c *DefaultCollection[T]) Add(elements ...T) <span class="cov0" title="0">{
+        c.elements = append(c.elements, elements...)
+}</span>
+
+// Get retrieves the element at the specified index
+func (c *DefaultCollection[T]) Get(index int) (T, bool) <span class="cov0" title="0">{
+        var zero T
+        if index &lt; 0 || index &gt;= len(c.elements) </span><span class="cov0" title="0">{
+                return zero, false
+        }</span>
+        <span class="cov0" title="0">return c.elements[index], true</span>
+}
+
+// Remove removes the element at the specified index
+func (c *DefaultCollection[T]) Remove(index int) bool <span class="cov0" title="0">{
+        if index &lt; 0 || index &gt;= len(c.elements) </span><span class="cov0" title="0">{
+                return false
+        }</span>
+        <span class="cov0" title="0">c.elements = append(c.elements[:index], c.elements[index+1:]...)
+        return true</span>
+}
+
+// Size returns the number of elements in the collection
+func (c *DefaultCollection[T]) Size() int <span class="cov0" title="0">{
+        return len(c.elements)
+}</span>
+
+// IsEmpty returns true if the collection has no elements
+func (c *DefaultCollection[T]) IsEmpty() bool <span class="cov0" title="0">{
+        return len(c.elements) == 0
+}</span>
+
+// Clear removes all elements from the collection
+func (c *DefaultCollection[T]) Clear() <span class="cov0" title="0">{
+        c.elements = []T{}
+}</span>
+
+// Elements returns a slice of all elements (implements stream.Collectable)
+func (c *DefaultCollection[T]) Elements() []T <span class="cov0" title="0">{
+        return c.elements
+}</span>
+
+// ForEach applies the given action to each element
+func (c *DefaultCollection[T]) ForEach(action func(T)) <span class="cov0" title="0">{
+        for _, item := range c.elements </span><span class="cov0" title="0">{
+                action(item)
+        }</span>
+}
+
+// Clone creates a shallow copy of the collection
+func (c *DefaultCollection[T]) Clone() Collection[T] <span class="cov0" title="0">{
+        cloned := make([]T, len(c.elements))
+        copy(cloned, c.elements)
+        return &amp;DefaultCollection[T]{
+                elements: cloned,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package dotenv
+
+import (
+        "maps"
+        "bytes"
+        "fmt"
+        "io"
+        "os"
+        "os/exec"
+        "sort"
+        "strconv"
+        "strings"
+)
+
+const doubleQuoteSpecialChars = "\\\n\r\"!$`"
+
+// Parse reads an env file from io.Reader, returning a map of keys and values.
+func Parse(r io.Reader) (map[string]string, error) <span class="cov0" title="0">{
+        var buf bytes.Buffer
+        _, err := io.Copy(&amp;buf, r)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return UnmarshalBytes(buf.Bytes())</span>
+}
+
+// Load will read your env file(s) and load them into ENV for this process.
+//
+// Call this function as close as possible to the start of your program (ideally in main).
+//
+// If you call Load without any args it will default to loading .env in the current path.
+//
+// You can otherwise tell it which files to load (there can be more than one) like:
+//
+//        dotenv.Load("fileone", "filetwo")
+//
+// It's important to note that it WILL NOT OVERRIDE an env variable that already exists - consider the .env file to set dev vars or sensible defaults.
+func Load(filenames ...string) (err error) <span class="cov0" title="0">{
+        filenames = filenamesOrDefault(filenames)
+
+        for _, filename := range filenames </span><span class="cov0" title="0">{
+                err = loadFile(filename, false)
+                if err != nil </span><span class="cov0" title="0">{
+                        return // return early on a spazout
+                }</span>
+        }
+        <span class="cov0" title="0">return</span>
+}
+
+// Overload will read your env file(s) and load them into ENV for this process.
+//
+// Call this function as close as possible to the start of your program (ideally in main).
+//
+// If you call Overload without any args it will default to loading .env in the current path.
+//
+// You can otherwise tell it which files to load (there can be more than one) like:
+//
+//        dotenv.Overload("fileone", "filetwo")
+//
+// It's important to note this WILL OVERRIDE an env variable that already exists - consider the .env file to forcefully set all vars.
+func Overload(filenames ...string) (err error) <span class="cov0" title="0">{
+        filenames = filenamesOrDefault(filenames)
+
+        for _, filename := range filenames </span><span class="cov0" title="0">{
+                err = loadFile(filename, true)
+                if err != nil </span><span class="cov0" title="0">{
+                        return // return early on a spazout
+                }</span>
+        }
+        <span class="cov0" title="0">return</span>
+}
+
+// Read all env (with same file loading semantics as Load) but return values as
+// a map rather than automatically writing values into env
+func Read(filenames ...string) (envMap map[string]string, err error) <span class="cov0" title="0">{
+        filenames = filenamesOrDefault(filenames)
+        envMap = make(map[string]string)
+
+        for _, filename := range filenames </span><span class="cov0" title="0">{
+                individualEnvMap, individualErr := readFile(filename)
+
+                if individualErr != nil </span><span class="cov0" title="0">{
+                        err = individualErr
+                        return // return early on a spazout
+                }</span>
+
+                <span class="cov0" title="0">maps.Copy(envMap, individualEnvMap)</span>
+        }
+
+        <span class="cov0" title="0">return</span>
+}
+
+// Unmarshal reads an env file from a string, returning a map of keys and values.
+func Unmarshal(str string) (envMap map[string]string, err error) <span class="cov0" title="0">{
+        return UnmarshalBytes([]byte(str))
+}</span>
+
+// UnmarshalBytes parses env file from byte slice of chars, returning a map of keys and values.
+func UnmarshalBytes(src []byte) (map[string]string, error) <span class="cov0" title="0">{
+        out := make(map[string]string)
+        err := parseBytes(src, out)
+
+        return out, err
+}</span>
+
+// Exec loads env vars from the specified filenames (empty map falls back to default)
+// then executes the cmd specified.
+//
+// Simply hooks up os.Stdin/err/out to the command and calls Run().
+//
+// If you want more fine grained control over your command it's recommended
+// that you use `Load()`, `Overload()` or `Read()` and the `os/exec` package yourself.
+func Exec(filenames []string, cmd string, cmdArgs []string, overload bool) error <span class="cov0" title="0">{
+        op := Load
+        if overload </span><span class="cov0" title="0">{
+                op = Overload
+        }</span>
+        <span class="cov0" title="0">if err := op(filenames...); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">command := exec.Command(cmd, cmdArgs...)
+        command.Stdin = os.Stdin
+        command.Stdout = os.Stdout
+        command.Stderr = os.Stderr
+        return command.Run()</span>
+}
+
+// Write serializes the given environment and writes it to a file.
+func Write(envMap map[string]string, filename string) error <span class="cov0" title="0">{
+        content, err := Marshal(envMap)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">file, err := os.Create(filename)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">defer file.Close()
+        _, err = file.WriteString(content + "\n")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return file.Sync()</span>
+}
+
+// Marshal outputs the given environment as a dotenv-formatted environment file.
+// Each line is in the format: KEY="VALUE" where VALUE is backslash-escaped.
+func Marshal(envMap map[string]string) (string, error) <span class="cov0" title="0">{
+        lines := make([]string, 0, len(envMap))
+        for k, v := range envMap </span><span class="cov0" title="0">{
+                if d, err := strconv.Atoi(v); err == nil </span><span class="cov0" title="0">{
+                        lines = append(lines, fmt.Sprintf(`%s=%d`, k, d))
+                }</span> else<span class="cov0" title="0"> {
+                        lines = append(lines, fmt.Sprintf(`%s="%s"`, k, doubleQuoteEscape(v)))
+                }</span>
+        }
+        <span class="cov0" title="0">sort.Strings(lines)
+        return strings.Join(lines, "\n"), nil</span>
+}
+
+func filenamesOrDefault(filenames []string) []string <span class="cov0" title="0">{
+        if len(filenames) == 0 </span><span class="cov0" title="0">{
+                return []string{".env"}
+        }</span>
+        <span class="cov0" title="0">return filenames</span>
+}
+
+func loadFile(filename string, overload bool) error <span class="cov0" title="0">{
+        envMap, err := readFile(filename)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">currentEnv := map[string]bool{}
+        rawEnv := os.Environ()
+        for _, rawEnvLine := range rawEnv </span><span class="cov0" title="0">{
+                key := strings.Split(rawEnvLine, "=")[0]
+                currentEnv[key] = true
+        }</span>
+
+        <span class="cov0" title="0">for key, value := range envMap </span><span class="cov0" title="0">{
+                if !currentEnv[key] || overload </span><span class="cov0" title="0">{
+                        _ = os.Setenv(key, value)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func readFile(filename string) (envMap map[string]string, err error) <span class="cov0" title="0">{
+        file, err := os.Open(filename)
+        if err != nil </span><span class="cov0" title="0">{
+                return
+        }</span>
+        <span class="cov0" title="0">defer file.Close()
+
+        return Parse(file)</span>
+}
+
+func doubleQuoteEscape(line string) string <span class="cov0" title="0">{
+        for _, c := range doubleQuoteSpecialChars </span><span class="cov0" title="0">{
+                toReplace := "\\" + string(c)
+                if c == '\n' </span><span class="cov0" title="0">{
+                        toReplace = `\n`
+                }</span>
+                <span class="cov0" title="0">if c == '\r' </span><span class="cov0" title="0">{
+                        toReplace = `\r`
+                }</span>
+                <span class="cov0" title="0">line = strings.Replace(line, string(c), toReplace, -1)</span>
+        }
+        <span class="cov0" title="0">return line</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package dotenv
+
+func init() <span class="cov0" title="0">{
+        Load()
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package dotenv
+
+import (
+        "bytes"
+        "errors"
+        "fmt"
+        "os"
+        "regexp"
+        "strings"
+        "unicode"
+)
+
+const (
+        charComment       = '#'
+        prefixSingleQuote = '\''
+        prefixDoubleQuote = '"'
+
+        exportPrefix = "export"
+)
+
+func parseBytes(src []byte, out map[string]string) error <span class="cov0" title="0">{
+        src = bytes.Replace(src, []byte("\r\n"), []byte("\n"), -1)
+        cutset := src
+        for </span><span class="cov0" title="0">{
+                cutset = getStatementStart(cutset)
+                if cutset == nil </span><span class="cov0" title="0">{
+                        // reached end of file
+                        break</span>
+                }
+
+                <span class="cov0" title="0">key, left, err := locateKeyName(cutset)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">value, left, err := extractVarValue(left, out)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov0" title="0">out[key] = value
+                cutset = left</span>
+        }
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+// getStatementPosition returns position of statement begin.
+//
+// It skips any comment line or non-whitespace character.
+func getStatementStart(src []byte) []byte <span class="cov0" title="0">{
+        pos := indexOfNonSpaceChar(src)
+        if pos == -1 </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">src = src[pos:]
+        if src[0] != charComment </span><span class="cov0" title="0">{
+                return src
+        }</span>
+
+        // skip comment section
+        <span class="cov0" title="0">pos = bytes.IndexFunc(src, isCharFunc('\n'))
+        if pos == -1 </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">return getStatementStart(src[pos:])</span>
+}
+
+// locateKeyName locates and parses key name and returns rest of slice
+func locateKeyName(src []byte) (key string, cutset []byte, err error) <span class="cov0" title="0">{
+        // trim "export" and space at beginning
+        src = bytes.TrimLeftFunc(src, isSpace)
+        if bytes.HasPrefix(src, []byte(exportPrefix)) </span><span class="cov0" title="0">{
+                trimmed := bytes.TrimPrefix(src, []byte(exportPrefix))
+                if bytes.IndexFunc(trimmed, isSpace) == 0 </span><span class="cov0" title="0">{
+                        src = bytes.TrimLeftFunc(trimmed, isSpace)
+                }</span>
+        }
+
+        // locate key name end and validate it in single loop
+        <span class="cov0" title="0">offset := 0
+loop:
+        for i, char := range src </span><span class="cov0" title="0">{
+                rchar := rune(char)
+                if isSpace(rchar) </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">switch char </span>{
+                case '=', ':':<span class="cov0" title="0">
+                        // library also supports yaml-style value declaration
+                        key = string(src[0:i])
+                        offset = i + 1
+                        break loop</span>
+                case '_':<span class="cov0" title="0"></span>
+                default:<span class="cov0" title="0">
+                        // variable name should match [A-Za-z0-9_.]
+                        if unicode.IsLetter(rchar) || unicode.IsNumber(rchar) || rchar == '.' </span><span class="cov0" title="0">{
+                                continue</span>
+                        }
+
+                        <span class="cov0" title="0">return "", nil, fmt.Errorf(
+                                `unexpected character %q in variable name near %q`,
+                                string(char), string(src))</span>
+                }
+        }
+
+        <span class="cov0" title="0">if len(src) == 0 </span><span class="cov0" title="0">{
+                return "", nil, errors.New("zero length string")
+        }</span>
+
+        // trim whitespace
+        <span class="cov0" title="0">key = strings.TrimRightFunc(key, unicode.IsSpace)
+        cutset = bytes.TrimLeftFunc(src[offset:], isSpace)
+        return key, cutset, nil</span>
+}
+
+// extractVarValue extracts variable value and returns rest of slice
+func extractVarValue(src []byte, vars map[string]string) (value string, rest []byte, err error) <span class="cov0" title="0">{
+        quote, hasPrefix := hasQuotePrefix(src)
+        if !hasPrefix </span><span class="cov0" title="0">{
+                // unquoted value - read until end of line
+                endOfLine := bytes.IndexFunc(src, isLineEnd)
+
+                // Hit EOF without a trailing newline
+                if endOfLine == -1 </span><span class="cov0" title="0">{
+                        endOfLine = len(src)
+
+                        if endOfLine == 0 </span><span class="cov0" title="0">{
+                                return "", nil, nil
+                        }</span>
+                }
+
+                // Convert line to rune away to do accurate countback of runes
+                <span class="cov0" title="0">line := []rune(string(src[0:endOfLine]))
+
+                // Assume end of line is end of var
+                endOfVar := len(line)
+                if endOfVar == 0 </span><span class="cov0" title="0">{
+                        return "", src[endOfLine:], nil
+                }</span>
+
+                // Work backwards to check if the line ends in whitespace then
+                // a comment, ie: foo=bar # baz # other
+                <span class="cov0" title="0">for i := 0; i &lt; endOfVar; i++ </span><span class="cov0" title="0">{
+                        if line[i] == charComment &amp;&amp; i &lt; endOfVar </span><span class="cov0" title="0">{
+                                if isSpace(line[i-1]) </span><span class="cov0" title="0">{
+                                        endOfVar = i
+                                        break</span>
+                                }
+                        }
+                }
+
+                <span class="cov0" title="0">trimmed := strings.TrimFunc(string(line[0:endOfVar]), isSpace)
+
+                return expandVariables(trimmed, vars), src[endOfLine:], nil</span>
+        }
+
+        // lookup quoted string terminator
+        <span class="cov0" title="0">for i := 1; i &lt; len(src); i++ </span><span class="cov0" title="0">{
+                if char := src[i]; char != quote </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                // skip escaped quote symbol (\" or \', depends on quote)
+                <span class="cov0" title="0">if prevChar := src[i-1]; prevChar == '\\' </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                // trim quotes
+                <span class="cov0" title="0">trimFunc := isCharFunc(rune(quote))
+                value = string(bytes.TrimLeftFunc(bytes.TrimRightFunc(src[0:i], trimFunc), trimFunc))
+                if quote == prefixDoubleQuote </span><span class="cov0" title="0">{
+                        // unescape newlines for double quote (this is compat feature)
+                        // and expand environment variables
+                        value = expandVariables(expandEscapes(value), vars)
+                }</span>
+
+                <span class="cov0" title="0">return value, src[i+1:], nil</span>
+        }
+
+        // return formatted error if quoted string is not terminated
+        <span class="cov0" title="0">valEndIndex := bytes.IndexFunc(src, isCharFunc('\n'))
+        if valEndIndex == -1 </span><span class="cov0" title="0">{
+                valEndIndex = len(src)
+        }</span>
+
+        <span class="cov0" title="0">return "", nil, fmt.Errorf("unterminated quoted value %s", src[:valEndIndex])</span>
+}
+
+func expandEscapes(str string) string <span class="cov0" title="0">{
+        out := escapeRegex.ReplaceAllStringFunc(str, func(match string) string </span><span class="cov0" title="0">{
+                c := strings.TrimPrefix(match, `\`)
+                switch c </span>{
+                case "n":<span class="cov0" title="0">
+                        return "\n"</span>
+                case "r":<span class="cov0" title="0">
+                        return "\r"</span>
+                default:<span class="cov0" title="0">
+                        return match</span>
+                }
+        })
+        <span class="cov0" title="0">return unescapeCharsRegex.ReplaceAllString(out, "$1")</span>
+}
+
+func indexOfNonSpaceChar(src []byte) int <span class="cov0" title="0">{
+        return bytes.IndexFunc(src, func(r rune) bool </span><span class="cov0" title="0">{
+                return !unicode.IsSpace(r)
+        }</span>)
+}
+
+// hasQuotePrefix reports whether charset starts with single or double quote and returns quote character
+func hasQuotePrefix(src []byte) (prefix byte, isQuoted bool) <span class="cov0" title="0">{
+        if len(src) == 0 </span><span class="cov0" title="0">{
+                return 0, false
+        }</span>
+
+        <span class="cov0" title="0">switch prefix := src[0]; prefix </span>{
+        case prefixDoubleQuote, prefixSingleQuote:<span class="cov0" title="0">
+                return prefix, true</span>
+        default:<span class="cov0" title="0">
+                return 0, false</span>
+        }
+}
+
+func isCharFunc(char rune) func(rune) bool <span class="cov0" title="0">{
+        return func(v rune) bool </span><span class="cov0" title="0">{
+                return v == char
+        }</span>
+}
+
+// isSpace reports whether the rune is a space character but not line break character
+//
+// this differs from unicode.IsSpace, which also applies line break as space
+func isSpace(r rune) bool <span class="cov0" title="0">{
+        switch r </span>{
+        case '\t', '\v', '\f', '\r', ' ', 0x85, 0xA0:<span class="cov0" title="0">
+                return true</span>
+        }
+        <span class="cov0" title="0">return false</span>
+}
+
+func isLineEnd(r rune) bool <span class="cov0" title="0">{
+        if r == '\n' || r == '\r' </span><span class="cov0" title="0">{
+                return true
+        }</span>
+        <span class="cov0" title="0">return false</span>
+}
+
+var (
+        escapeRegex        = regexp.MustCompile(`\\.`)
+        expandVarRegex     = regexp.MustCompile(`(\\)?(\$)(\()?\{?([A-Z0-9_]+)?\}?`)
+        unescapeCharsRegex = regexp.MustCompile(`\\([^$])`)
+)
+
+func expandVariables(v string, m map[string]string) string <span class="cov0" title="0">{
+        return expandVarRegex.ReplaceAllStringFunc(v, func(s string) string </span><span class="cov0" title="0">{
+                submatch := expandVarRegex.FindStringSubmatch(s)
+
+                if submatch == nil </span><span class="cov0" title="0">{
+                        return s
+                }</span>
+                <span class="cov0" title="0">if submatch[1] == "\\" || submatch[2] == "(" </span><span class="cov0" title="0">{
+                        return submatch[0][1:]
+                }</span> else<span class="cov0" title="0"> if submatch[4] != "" </span><span class="cov0" title="0">{
+                        if val, ok := m[submatch[4]]; ok </span><span class="cov0" title="0">{
+                                return val
+                        }</span>
+                        <span class="cov0" title="0">if val, ok := os.LookupEnv(submatch[4]); ok </span><span class="cov0" title="0">{
+                                return val
+                        }</span>
+                        <span class="cov0" title="0">return m[submatch[4]]</span>
+                }
+                <span class="cov0" title="0">return s</span>
+        })
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package env
+
+import (
+        "log"
+        "os"
+        "path/filepath"
+        "sync"
+
+        "github.com/avila-r/ego/dotenv"
+)
+
+var (
+        IsLoaded         bool
+        HasCustomProfile bool
+)
+
+func Get(key string) string <span class="cov0" title="0">{
+        var (
+                once sync.Once
+        )
+
+        if !IsLoaded </span><span class="cov0" title="0">{
+                if err := Load(); err != nil </span><span class="cov0" title="0">{
+                        once.Do(func() </span><span class="cov0" title="0">{
+                                log.Print("[warning] there is no .env file to load")
+                        }</span>)
+                }
+        }
+
+        <span class="cov0" title="0">return os.Getenv(key)</span>
+}
+
+func Load(path ...string) error <span class="cov0" title="0">{
+        if IsLoaded </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">var (
+                file   = ".env"
+                target string
+        )
+
+        if len(path) &gt; 0 </span><span class="cov0" title="0">{
+                target = path[0]
+        }</span>
+
+        <span class="cov0" title="0">def := filepath.Join(target, file)
+
+        // Loads default .env
+        if err := dotenv.Load(def); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">profile := os.Getenv("PROFILE")
+
+        // No custom profile to load
+        if profile == "" </span><span class="cov0" title="0">{
+                IsLoaded, HasCustomProfile = true, false
+
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">custom := filepath.Join(target, file+"."+profile)
+
+        if err := dotenv.Load(custom); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">IsLoaded, HasCustomProfile = true, true
+
+        return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package env
+
+import (
+        "encoding"
+        "fmt"
+        "log"
+        "net/url"
+        "os"
+        "reflect"
+        "sort"
+        "strconv"
+        "strings"
+        "time"
+
+        "github.com/avila-r/ego"
+)
+
+var errors = ego.ExtendedGoErrorsNamespace.Class("env")
+
+var (
+        ErrNoTargetFieldsAreSet = errors.New("none of the target fields were set from environment variables")
+        ErrInvalidTarget        = errors.New("target must be non-nil pointer to struct that has at least one exported field with a valid env tag")
+)
+
+var FailureFunc = func(err error) <span class="cov0" title="0">{
+        log.Fatalf("an error was encountered while decoding envs: %v\n", err)
+}</span>
+
+// Decoder is the interface implemented by an object that can decode an
+// environment variable string representation of itself.
+type Decoder interface {
+        Decode(string) error
+}
+
+// NotStrictDecode decodes environment variables into the provided target.
+// The target must be a non-nil pointer to a struct.  Fields in the struct
+// must be exported, and tagged with an "env" struct tag with a value
+// containing the name of the environment variable.  An error is
+// returned if there are no exported members tagged.
+//
+// Default values may be provided by appending ",default=value" to the
+// struct tag.  Required values may be marked by appending ",required"
+// to the struct tag. It is an error to provide both "default" and
+// "required". Strict values may be marked by appending ",strict"
+// which will return an error if there is an error while parsing.
+// If everything must be strict, consider using Decode instead.
+//
+// All primitive types are supported, including bool, floating point,
+// signed and unsigned integers, and string.  Boolean and numeric
+// types are decoded using the standard strconv Parse functions for
+// those types.  Structs and pointers to structs are decoded
+// recursively.  time.Duration is supported via the
+// time.ParseDuration() function and *url.URL is supported via the
+// url.Parse() function. Slices are supported for all above mentioned
+// primitive types. Semicolon is used as delimiter in environment variables.
+func NotStrictDecode(target any) error <span class="cov0" title="0">{
+        nFields, err := decode(target, false)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // if we didn't do anything - the user probably did something
+        // wrong like leave all fields unexported.
+        <span class="cov0" title="0">if nFields == 0 </span><span class="cov0" title="0">{
+                return ErrNoTargetFieldsAreSet
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+// Aall fields will have an implicit
+// ",strict" on all fields.
+func Decode(target any) error <span class="cov0" title="0">{
+        nFields, err := decode(target, true)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // if we didn't do anything - the user probably did something
+        // wrong like leave all fields unexported.
+        <span class="cov0" title="0">if nFields == 0 </span><span class="cov0" title="0">{
+                return ErrInvalidTarget
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+func decode(target any, strict bool) (int, error) <span class="cov0" title="0">{
+        s := reflect.ValueOf(target)
+        if s.Kind() != reflect.Ptr || s.IsNil() </span><span class="cov0" title="0">{
+                return 0, ErrInvalidTarget
+        }</span>
+
+        <span class="cov0" title="0">s = s.Elem()
+        if s.Kind() != reflect.Struct </span><span class="cov0" title="0">{
+                return 0, ErrInvalidTarget
+        }</span>
+
+        <span class="cov0" title="0">t := s.Type()
+        setFieldCount := 0
+        for i := 0; i &lt; s.NumField(); i++ </span><span class="cov0" title="0">{
+                // Localize the umbrella `strict` value to the specific field.
+                strict := strict
+
+                f := s.Field(i)
+
+                switch f.Kind() </span>{
+                case reflect.Ptr:<span class="cov0" title="0">
+                        if f.Elem().Kind() != reflect.Struct </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+
+                        <span class="cov0" title="0">f = f.Elem()
+                        fallthrough</span>
+
+                case reflect.Struct:<span class="cov0" title="0">
+                        if !f.Addr().CanInterface() </span><span class="cov0" title="0">{
+                                continue</span>
+                        }
+
+                        <span class="cov0" title="0">ss := f.Addr().Interface()
+                        _, custom := ss.(Decoder)
+                        if custom </span><span class="cov0" title="0">{
+                                break</span>
+                        }
+
+                        <span class="cov0" title="0">n, err := decode(ss, strict)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return 0, err
+                        }</span>
+                        <span class="cov0" title="0">setFieldCount += n</span>
+                }
+
+                <span class="cov0" title="0">if !f.CanSet() </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">tag := t.Field(i).Tag.Get("env")
+                if tag == "" </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">parts := strings.Split(tag, ",")
+                env := os.Getenv(parts[0])
+
+                required := false
+                hasDefault := false
+                defaultValue := ""
+
+                for _, o := range parts[1:] </span><span class="cov0" title="0">{
+                        if !required </span><span class="cov0" title="0">{
+                                required = strings.HasPrefix(o, "required")
+                        }</span>
+                        <span class="cov0" title="0">if strings.HasPrefix(o, "default=") </span><span class="cov0" title="0">{
+                                hasDefault = true
+                                defaultValue = o[8:]
+                        }</span>
+                        <span class="cov0" title="0">if !strict </span><span class="cov0" title="0">{
+                                strict = strings.HasPrefix(o, "strict")
+                        }</span>
+                }
+
+                <span class="cov0" title="0">if required &amp;&amp; hasDefault </span><span class="cov0" title="0">{
+                        panic(`"default" and "required" may not be specified in the same annotation`)</span>
+                }
+                <span class="cov0" title="0">if env == "" &amp;&amp; required </span><span class="cov0" title="0">{
+                        return 0, fmt.Errorf("the environment variable \"%s\" is missing", parts[0])
+                }</span>
+                <span class="cov0" title="0">if env == "" </span><span class="cov0" title="0">{
+                        env = defaultValue
+                }</span>
+                <span class="cov0" title="0">if env == "" </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">setFieldCount++
+
+                unmarshaler, implementsUnmarshaler := f.Addr().Interface().(encoding.TextUnmarshaler)
+                decoder, implmentsDecoder := f.Addr().Interface().(Decoder)
+                if implmentsDecoder </span><span class="cov0" title="0">{
+                        if err := decoder.Decode(env); err != nil </span><span class="cov0" title="0">{
+                                return 0, err
+                        }</span>
+                } else<span class="cov0" title="0"> if implementsUnmarshaler </span><span class="cov0" title="0">{
+                        if err := unmarshaler.UnmarshalText([]byte(env)); err != nil </span><span class="cov0" title="0">{
+                                return 0, err
+                        }</span>
+                } else<span class="cov0" title="0"> if f.Kind() == reflect.Slice </span><span class="cov0" title="0">{
+                        decodeSlice(&amp;f, env)
+                }</span> else<span class="cov0" title="0"> {
+                        if err := decodePrimitiveType(&amp;f, env); err != nil &amp;&amp; strict </span><span class="cov0" title="0">{
+                                return 0, err
+                        }</span>
+                }
+        }
+
+        <span class="cov0" title="0">return setFieldCount, nil</span>
+}
+
+func decodeSlice(f *reflect.Value, env string) <span class="cov0" title="0">{
+        parts := strings.Split(env, ";")
+
+        values := parts[:0]
+        for _, x := range parts </span><span class="cov0" title="0">{
+                if x != "" </span><span class="cov0" title="0">{
+                        values = append(values, strings.TrimSpace(x))
+                }</span>
+        }
+
+        <span class="cov0" title="0">valuesCount := len(values)
+        slice := reflect.MakeSlice(f.Type(), valuesCount, valuesCount)
+        if valuesCount &gt; 0 </span><span class="cov0" title="0">{
+                for i := 0; i &lt; valuesCount; i++ </span><span class="cov0" title="0">{
+                        e := slice.Index(i)
+                        decodePrimitiveType(&amp;e, values[i])
+                }</span>
+        }
+
+        <span class="cov0" title="0">f.Set(slice)</span>
+}
+
+func decodePrimitiveType(f *reflect.Value, env string) error <span class="cov0" title="0">{
+        switch f.Kind() </span>{
+        case reflect.Bool:<span class="cov0" title="0">
+                v, err := strconv.ParseBool(env)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">f.SetBool(v)</span>
+
+        case reflect.Float32, reflect.Float64:<span class="cov0" title="0">
+                bits := f.Type().Bits()
+                v, err := strconv.ParseFloat(env, bits)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">f.SetFloat(v)</span>
+
+        case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:<span class="cov0" title="0">
+                if t := f.Type(); t.PkgPath() == "time" &amp;&amp; t.Name() == "Duration" </span><span class="cov0" title="0">{
+                        v, err := time.ParseDuration(env)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                        <span class="cov0" title="0">f.SetInt(int64(v))</span>
+                } else<span class="cov0" title="0"> {
+                        bits := f.Type().Bits()
+                        v, err := strconv.ParseInt(env, 0, bits)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                        <span class="cov0" title="0">f.SetInt(v)</span>
+                }
+        case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:<span class="cov0" title="0">
+                bits := f.Type().Bits()
+                v, err := strconv.ParseUint(env, 0, bits)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">f.SetUint(v)</span>
+
+        case reflect.String:<span class="cov0" title="0">
+                f.SetString(env)</span>
+
+        case reflect.Ptr:<span class="cov0" title="0">
+                if t := f.Type().Elem(); t.Kind() == reflect.Struct &amp;&amp; t.PkgPath() == "net/url" &amp;&amp; t.Name() == "URL" </span><span class="cov0" title="0">{
+                        v, err := url.Parse(env)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                        <span class="cov0" title="0">f.Set(reflect.ValueOf(v))</span>
+                }
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+// MustNotStrictDecode calls Decode and terminates
+// the process if any errors are encountered.
+func MustNotStrictDecode(target any) <span class="cov0" title="0">{
+        err := NotStrictDecode(target)
+        if err != nil </span><span class="cov0" title="0">{
+                FailureFunc(err)
+        }</span>
+}
+
+// MustDecode calls StrictDecode and terminates
+// the process if any errors are encountered.
+func MustDecode(target any) <span class="cov0" title="0">{
+        err := Decode(target)
+        if err != nil </span><span class="cov0" title="0">{
+                FailureFunc(err)
+        }</span>
+}
+
+// Configuration info for Export
+type ConfigInfo struct {
+        Field        string
+        EnvVar       string
+        Value        string
+        DefaultValue string
+        HasDefault   bool
+        Required     bool
+        UsesEnv      bool
+}
+
+type ConfigInfoSlice []*ConfigInfo
+
+func (c ConfigInfoSlice) Less(i, j int) bool <span class="cov0" title="0">{
+        return c[i].EnvVar &lt; c[j].EnvVar
+}</span>
+func (c ConfigInfoSlice) Len() int <span class="cov0" title="0">{
+        return len(c)
+}</span>
+func (c ConfigInfoSlice) Swap(i, j int) <span class="cov0" title="0">{
+        c[i], c[j] = c[j], c[i]
+}</span>
+
+// Returns a list of final configuration metadata sorted by envvar name
+func Export(target any) ([]*ConfigInfo, error) <span class="cov0" title="0">{
+        s := reflect.ValueOf(target)
+        if s.Kind() != reflect.Ptr || s.IsNil() </span><span class="cov0" title="0">{
+                return nil, ErrInvalidTarget
+        }</span>
+
+        <span class="cov0" title="0">cfg := []*ConfigInfo{}
+
+        s = s.Elem()
+        if s.Kind() != reflect.Struct </span><span class="cov0" title="0">{
+                return nil, ErrInvalidTarget
+        }</span>
+
+        <span class="cov0" title="0">t := s.Type()
+        for i := 0; i &lt; s.NumField(); i++ </span><span class="cov0" title="0">{
+                f := s.Field(i)
+                fName := t.Field(i).Name
+
+                fElem := f
+                if f.Kind() == reflect.Ptr </span><span class="cov0" title="0">{
+                        fElem = f.Elem()
+                }</span>
+                <span class="cov0" title="0">if fElem.Kind() == reflect.Struct </span><span class="cov0" title="0">{
+                        ss := fElem.Addr().Interface()
+                        subCfg, err := Export(ss)
+                        if err != ErrInvalidTarget </span><span class="cov0" title="0">{
+                                f = fElem
+                                for _, v := range subCfg </span><span class="cov0" title="0">{
+                                        v.Field = fmt.Sprintf("%s.%s", fName, v.Field)
+                                        cfg = append(cfg, v)
+                                }</span>
+                        }
+                }
+
+                <span class="cov0" title="0">tag := t.Field(i).Tag.Get("env")
+                if tag == "" </span><span class="cov0" title="0">{
+                        continue</span>
+                }
+
+                <span class="cov0" title="0">parts := strings.Split(tag, ",")
+
+                ci := &amp;ConfigInfo{
+                        Field:   fName,
+                        EnvVar:  parts[0],
+                        UsesEnv: os.Getenv(parts[0]) != "",
+                }
+
+                for _, o := range parts[1:] </span><span class="cov0" title="0">{
+                        if strings.HasPrefix(o, "default=") </span><span class="cov0" title="0">{
+                                ci.HasDefault = true
+                                ci.DefaultValue = o[8:]
+                        }</span> else<span class="cov0" title="0"> if strings.HasPrefix(o, "required") </span><span class="cov0" title="0">{
+                                ci.Required = true
+                        }</span>
+                }
+
+                <span class="cov0" title="0">if f.Kind() == reflect.Ptr &amp;&amp; f.IsNil() </span><span class="cov0" title="0">{
+                        ci.Value = ""
+                }</span> else<span class="cov0" title="0"> if stringer, ok := f.Interface().(fmt.Stringer); ok </span><span class="cov0" title="0">{
+                        ci.Value = stringer.String()
+                }</span> else<span class="cov0" title="0"> {
+                        switch f.Kind() </span>{
+                        case reflect.Bool:<span class="cov0" title="0">
+                                ci.Value = strconv.FormatBool(f.Bool())</span>
+
+                        case reflect.Float32, reflect.Float64:<span class="cov0" title="0">
+                                bits := f.Type().Bits()
+                                ci.Value = strconv.FormatFloat(f.Float(), 'f', -1, bits)</span>
+
+                        case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:<span class="cov0" title="0">
+                                ci.Value = strconv.FormatInt(f.Int(), 10)</span>
+
+                        case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:<span class="cov0" title="0">
+                                ci.Value = strconv.FormatUint(f.Uint(), 10)</span>
+
+                        case reflect.String:<span class="cov0" title="0">
+                                ci.Value = f.String()</span>
+
+                        case reflect.Slice:<span class="cov0" title="0">
+                                ci.Value = fmt.Sprintf("%v", f.Interface())</span>
+
+                        default:<span class="cov0" title="0">
+                                // Unable to determine string format for value
+                                return nil, ErrInvalidTarget</span>
+                        }
+                }
+
+                <span class="cov0" title="0">cfg = append(cfg, ci)</span>
+        }
+
+        // No configuration tags found, assume invalid input
+        <span class="cov0" title="0">if len(cfg) == 0 </span><span class="cov0" title="0">{
+                return nil, ErrInvalidTarget
+        }</span>
+
+        <span class="cov0" title="0">sort.Sort(ConfigInfoSlice(cfg))
+
+        return cfg, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package httpx
+
+import "io"
+
+type Body struct {
+        bytes []byte
+        empty bool
+}
+
+func EmptyBody() Body <span class="cov0" title="0">{
+        return Body{
+                bytes: []byte{},
+                empty: true,
+        }
+}</span>
+
+func BodyOf(data io.ReadCloser) (Body, error) <span class="cov0" title="0">{
+        defer data.Close()
+
+        bytes, err := io.ReadAll(data)
+        if err != nil </span><span class="cov0" title="0">{
+                return EmptyBody(), err
+        }</span>
+
+        <span class="cov0" title="0">return Body{bytes: bytes}, nil</span>
+}
+
+func (b Body) Bytes() []byte <span class="cov0" title="0">{
+        return b.bytes
+}</span>
+
+func (b Body) IsEmpty() bool <span class="cov0" title="0">{
+        return b.empty
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package httpx
+
+import "net/http"
+
+func Get(url string) Response <span class="cov0" title="0">{
+        var err error
+
+        base, err := http.Get(url)
+        if err != nil </span><span class="cov0" title="0">{
+                return Response{err: err}
+        }</span>
+
+        <span class="cov0" title="0">status := GetStatus(base.StatusCode)
+
+        header := HeaderOf(base.Header)
+
+        body, err := BodyOf(base.Body)
+
+        response := Response{
+                status: *status,
+                header: header,
+                body:   body,
+                res:    base,
+                err:    err,
+        }
+
+        return response</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package httpx
+
+import (
+        "net/http"
+
+        "github.com/avila-r/ego/collection"
+        "github.com/avila-r/ego/list"
+        "github.com/avila-r/ego/optional"
+)
+
+type Header struct {
+        headers map[string][]string
+}
+
+func (h *Header) First(key string) optional.Optional[string] <span class="cov0" title="0">{
+        return optional.Of("")
+}</span>
+
+func (h *Header) All(key string) collection.List[string] <span class="cov0" title="0">{
+        return list.Empty[string]()
+}</span>
+
+func HeaderOf(header http.Header) Header <span class="cov0" title="0">{
+        return Header{} // Placeholder
+}</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package httpx
+
+type Protocol struct {
+        name  string
+        major int
+        minor int
+}
+
+var (
+        ProtocolHTTP1_0 = Protocol{"HTTP", 1, 0}
+        ProtocolHTTP1_1 = Protocol{"HTTP", 1, 1}
+        ProtocolHTTP2   = Protocol{"HTTP", 2, 0}
+)
+
+func (p Protocol) Name() string <span class="cov0" title="0">{
+        return p.name
+}</span>
+
+func (p Protocol) Major() int <span class="cov0" title="0">{
+        return p.major
+}</span>
+
+func (p Protocol) Minor() int <span class="cov0" title="0">{
+        return p.minor
+}</span>
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package httpx
+
+import (
+        "net/url"
+
+        "github.com/avila-r/ego/collection"
+        "github.com/avila-r/ego/list"
+        "github.com/avila-r/ego/pair"
+)
+
+type Request struct {
+        Target RequestTarget
+        Method Method
+        Body   Body
+}
+
+type RequestTarget struct {
+        url   string
+        query collection.List[pair.EntryPair[string, string]]
+}
+
+func Uri(uri string) *RequestTarget <span class="cov0" title="0">{
+        return &amp;RequestTarget{
+                url:   uri,
+                query: list.Empty[pair.EntryPair[string, string]](),
+        }
+}</span>
+
+func Url(url string) *RequestTarget <span class="cov0" title="0">{
+        return &amp;RequestTarget{
+                url:   url,
+                query: list.Empty[pair.EntryPair[string, string]](),
+        }
+}</span>
+
+func (rt *RequestTarget) WithQueryParam(key, value string) *RequestTarget <span class="cov0" title="0">{
+        rt.query.Add(pair.EntryPair[string, string]{Key: key, Value: value})
+        return rt
+}</span>
+
+func (rt *RequestTarget) Build() (string, error) <span class="cov0" title="0">{
+        u, err := url.Parse(rt.url)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+
+        <span class="cov0" title="0">q := u.Query()
+        rt.query.ForEach(func(entry pair.EntryPair[string, string]) </span><span class="cov0" title="0">{
+                q.Add(entry.Key, entry.Value)
+        }</span>)
+
+        <span class="cov0" title="0">u.RawQuery = q.Encode()
+
+        return u.String(), nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package httpx
+
+import (
+        "net/http"
+)
+
+type Response struct {
+        status Status
+        header Header
+        body   Body
+
+        res *http.Response
+        err error
+}
+
+func (r *Response) Status() Status <span class="cov0" title="0">{
+        return r.status
+}</span>
+
+func (r *Response) Header() Header <span class="cov0" title="0">{
+        return r.header
+}</span>
+
+func (r *Response) Body() Body <span class="cov0" title="0">{
+        return r.body
+}</span>
+
+func (r *Response) Error() error <span class="cov0" title="0">{
+        return r.err
+}</span>
+
+func (r *Response) HasFailed() bool <span class="cov0" title="0">{
+        return r.err != nil
+}</span>
+
+func (r *Response) Raw() *http.Response <span class="cov0" title="0">{
+        return r.res
+}</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package httpx
+
+type Status struct {
+        Code  int    `json:"code"`
+        Label string `json:"label"`
+}
+
+var (
+        StatusContinue           = Status{Code: 100, Label: "Continue"}            // RFC 9110, 15.2.1
+        StatusSwitchingProtocols = Status{Code: 101, Label: "Switching Protocols"} // RFC 9110, 15.2.2
+        StatusProcessing         = Status{Code: 102, Label: "Processing"}          // RFC 2518, 10.1
+        StatusEarlyHints         = Status{Code: 103, Label: "Early Hints"}         // RFC 8297
+
+        StatusOK                   = Status{Code: 200, Label: "OK"}                            // RFC 9110, 15.3.1
+        StatusCreated              = Status{Code: 201, Label: "Created"}                       // RFC 9110, 15.3.2
+        StatusAccepted             = Status{Code: 202, Label: "Accepted"}                      // RFC 9110, 15.3.3
+        StatusNonAuthoritativeInfo = Status{Code: 203, Label: "Non-Authoritative Information"} // RFC 9110, 15.3.4
+        StatusNoContent            = Status{Code: 204, Label: "No Content"}                    // RFC 9110, 15.3.5
+        StatusResetContent         = Status{Code: 205, Label: "Reset Content"}                 // RFC 9110, 15.3.6
+        StatusPartialContent       = Status{Code: 206, Label: "Partial Content"}               // RFC 9110, 15.3.7
+        StatusMultiStatus          = Status{Code: 207, Label: "Multi-Status"}                  // RFC 4918, 11.1
+        StatusAlreadyReported      = Status{Code: 208, Label: "Already Reported"}              // RFC 5842, 7.1
+        StatusIMUsed               = Status{Code: 226, Label: "IM Used"}                       // RFC 3229, 10.4.1
+
+        StatusMultipleChoices   = Status{Code: 300, Label: "Multiple Choices"}   // RFC 9110, 15.4.1
+        StatusMovedPermanently  = Status{Code: 301, Label: "Moved Permanently"}  // RFC 9110, 15.4.2
+        StatusFound             = Status{Code: 302, Label: "Found"}              // RFC 9110, 15.4.3
+        StatusSeeOther          = Status{Code: 303, Label: "See Other"}          // RFC 9110, 15.4.4
+        StatusNotModified       = Status{Code: 304, Label: "Not Modified"}       // RFC 9110, 15.4.5
+        StatusUseProxy          = Status{Code: 305, Label: "Use Proxy"}          // RFC 9110, 15.4.6
+        StatusTemporaryRedirect = Status{Code: 307, Label: "Temporary Redirect"} // RFC 9110, 15.4.8
+        StatusPermanentRedirect = Status{Code: 308, Label: "Permanent Redirect"} // RFC 9110, 15.4.9
+
+        StatusBadRequest                   = Status{Code: 400, Label: "Bad Request"}                     // RFC 9110, 15.5.1
+        StatusUnauthorized                 = Status{Code: 401, Label: "Unauthorized"}                    // RFC 9110, 15.5.2
+        StatusPaymentRequired              = Status{Code: 402, Label: "Payment Required"}                // RFC 9110, 15.5.3
+        StatusForbidden                    = Status{Code: 403, Label: "Forbidden"}                       // RFC 9110, 15.5.4
+        StatusNotFound                     = Status{Code: 404, Label: "Not Found"}                       // RFC 9110, 15.5.5
+        StatusMethodNotAllowed             = Status{Code: 405, Label: "Method Not Allowed"}              // RFC 9110, 15.5.6
+        StatusNotAcceptable                = Status{Code: 406, Label: "Not Acceptable"}                  // RFC 9110, 15.5.7
+        StatusProxyAuthRequired            = Status{Code: 407, Label: "Proxy Authentication Required"}   // RFC 9110, 15.5.8
+        StatusRequestTimeout               = Status{Code: 408, Label: "Request Timeout"}                 // RFC 9110, 15.5.9
+        StatusConflict                     = Status{Code: 409, Label: "Conflict"}                        // RFC 9110, 15.5.10
+        StatusGone                         = Status{Code: 410, Label: "Gone"}                            // RFC 9110, 15.5.11
+        StatusLengthRequired               = Status{Code: 411, Label: "Length Required"}                 // RFC 9110, 15.5.12
+        StatusPreconditionFailed           = Status{Code: 412, Label: "Precondition Failed"}             // RFC 9110, 15.5.13
+        StatusRequestEntityTooLarge        = Status{Code: 413, Label: "Payload Too Large"}               // RFC 9110, 15.5.14
+        StatusRequestURITooLong            = Status{Code: 414, Label: "URI Too Long"}                    // RFC 9110, 15.5.15
+        StatusUnsupportedMediaType         = Status{Code: 415, Label: "Unsupported Media Type"}          // RFC 9110, 15.5.16
+        StatusRequestedRangeNotSatisfiable = Status{Code: 416, Label: "Range Not Satisfiable"}           // RFC 9110, 15.5.17
+        StatusExpectationFailed            = Status{Code: 417, Label: "Expectation Failed"}              // RFC 9110, 15.5.18
+        StatusTeapot                       = Status{Code: 418, Label: "I'm a teapot"}                    // RFC 9110, 15.5.19
+        StatusMisdirectedRequest           = Status{Code: 421, Label: "Misdirected Request"}             // RFC 9110, 15.5.20
+        StatusUnprocessableEntity          = Status{Code: 422, Label: "Unprocessable Entity"}            // RFC 9110, 15.5.21
+        StatusLocked                       = Status{Code: 423, Label: "Locked"}                          // RFC 4918, 11.3
+        StatusFailedDependency             = Status{Code: 424, Label: "Failed Dependency"}               // RFC 4918, 11.4
+        StatusTooEarly                     = Status{Code: 425, Label: "Too Early"}                       // RFC 8470, 5.2.
+        StatusUpgradeRequired              = Status{Code: 426, Label: "Upgrade Required"}                // RFC 9110, 15.5.22
+        StatusPreconditionRequired         = Status{Code: 428, Label: "Precondition Required"}           // RFC 6585, 3
+        StatusTooManyRequests              = Status{Code: 429, Label: "Too Many Requests"}               // RFC 6585, 4
+        StatusRequestHeaderFieldsTooLarge  = Status{Code: 431, Label: "Request Header Fields Too Large"} // RFC 6585, 5
+        StatusUnavailableForLegalReasons   = Status{Code: 451, Label: "Unavailable For Legal Reasons"}   // RFC 7725, 3
+
+        StatusInternalServerError           = Status{Code: 500, Label: "Internal Server Error"}           // RFC 9110, 15.6.1
+        StatusNotImplemented                = Status{Code: 501, Label: "Not Implemented"}                 // RFC 9110, 15.6.2
+        StatusBadGateway                    = Status{Code: 502, Label: "Bad Gateway"}                     // RFC 9110, 15.6.3
+        StatusServiceUnavailable            = Status{Code: 503, Label: "Service Unavailable"}             // RFC 9110, 15.6.4
+        StatusGatewayTimeout                = Status{Code: 504, Label: "Gateway Timeout"}                 // RFC 9110, 15.6.5
+        StatusHTTPVersionNotSupported       = Status{Code: 505, Label: "HTTP Version Not Supported"}      // RFC 9110, 15.6.6
+        StatusVariantAlsoNegotiates         = Status{Code: 506, Label: "Variant Also Negotiates"}         // RFC 2295, 8.1
+        StatusInsufficientStorage           = Status{Code: 507, Label: "Insufficient Storage"}            // RFC 4918, 11.5
+        StatusLoopDetected                  = Status{Code: 508, Label: "Loop Detected"}                   // RFC 5842, 7.2
+        StatusNotExtended                   = Status{Code: 510, Label: "Not Extended"}                    // RFC 2774, 7
+        StatusNetworkAuthenticationRequired = Status{Code: 511, Label: "Network Authentication Required"} // RFC 6585, 6
+
+        statusMap = map[int]*Status{
+                100: &amp;StatusContinue,
+                101: &amp;StatusSwitchingProtocols,
+                102: &amp;StatusProcessing,
+                103: &amp;StatusEarlyHints,
+                200: &amp;StatusOK,
+                201: &amp;StatusCreated,
+                202: &amp;StatusAccepted,
+                203: &amp;StatusNonAuthoritativeInfo,
+                204: &amp;StatusNoContent,
+                205: &amp;StatusResetContent,
+                206: &amp;StatusPartialContent,
+                207: &amp;StatusMultiStatus,
+                208: &amp;StatusAlreadyReported,
+                226: &amp;StatusIMUsed,
+                300: &amp;StatusMultipleChoices,
+                301: &amp;StatusMovedPermanently,
+                302: &amp;StatusFound,
+                303: &amp;StatusSeeOther,
+                304: &amp;StatusNotModified,
+                305: &amp;StatusUseProxy,
+                307: &amp;StatusTemporaryRedirect,
+                308: &amp;StatusPermanentRedirect,
+                400: &amp;StatusBadRequest,
+                401: &amp;StatusUnauthorized,
+                402: &amp;StatusPaymentRequired,
+                403: &amp;StatusForbidden,
+                404: &amp;StatusNotFound,
+                405: &amp;StatusMethodNotAllowed,
+                406: &amp;StatusNotAcceptable,
+                407: &amp;StatusProxyAuthRequired,
+                408: &amp;StatusRequestTimeout,
+                409: &amp;StatusConflict,
+                410: &amp;StatusGone,
+                411: &amp;StatusLengthRequired,
+                412: &amp;StatusPreconditionFailed,
+                413: &amp;StatusRequestEntityTooLarge,
+                414: &amp;StatusRequestURITooLong,
+                415: &amp;StatusUnsupportedMediaType,
+                416: &amp;StatusRequestedRangeNotSatisfiable,
+                417: &amp;StatusExpectationFailed,
+                418: &amp;StatusTeapot,
+                421: &amp;StatusMisdirectedRequest,
+                422: &amp;StatusUnprocessableEntity,
+                423: &amp;StatusLocked,
+                424: &amp;StatusFailedDependency,
+                425: &amp;StatusTooEarly,
+                426: &amp;StatusUpgradeRequired,
+                428: &amp;StatusPreconditionRequired,
+                429: &amp;StatusTooManyRequests,
+                431: &amp;StatusRequestHeaderFieldsTooLarge,
+                451: &amp;StatusUnavailableForLegalReasons,
+                500: &amp;StatusInternalServerError,
+                501: &amp;StatusNotImplemented,
+                502: &amp;StatusBadGateway,
+                503: &amp;StatusServiceUnavailable,
+                504: &amp;StatusGatewayTimeout,
+                505: &amp;StatusHTTPVersionNotSupported,
+                506: &amp;StatusVariantAlsoNegotiates,
+                507: &amp;StatusInsufficientStorage,
+                508: &amp;StatusLoopDetected,
+                510: &amp;StatusNotExtended,
+                511: &amp;StatusNetworkAuthenticationRequired,
+        }
+)
+
+func GetStatus(code int) *Status <span class="cov0" title="0">{
+        if status, ok := statusMap[code]; ok </span><span class="cov0" title="0">{
+                return status
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (s *Status) Is5xx() bool <span class="cov0" title="0">{
+        return s.Code &gt;= 500 &amp;&amp; s.Code &lt; 600
+}</span>
+
+func (s *Status) Is4xx() bool <span class="cov0" title="0">{
+        return s.Code &gt;= 400 &amp;&amp; s.Code &lt; 500
+}</span>
+
+func (s *Status) Is3xx() bool <span class="cov0" title="0">{
+        return s.Code &gt;= 300 &amp;&amp; s.Code &lt; 400
+}</span>
+
+func (s *Status) Is2xx() bool <span class="cov0" title="0">{
+        return s.Code &gt;= 200 &amp;&amp; s.Code &lt; 300
+}</span>
+
+func (s *Status) Is1xx() bool <span class="cov0" title="0">{
+        return s.Code &gt;= 100 &amp;&amp; s.Code &lt; 200
+}</span>
+
+func (s *Status) IsErr() bool <span class="cov0" title="0">{
+        return s.Is4xx() || s.Is5xx()
+}</span>
+
+func (s *Status) IsSuccess() bool <span class="cov0" title="0">{
+        return s.Is2xx()
+}</span>
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package iterator
+
+import "github.com/avila-r/ego/stream"
+
+type Iterable[T any] interface {
+        ForEach(func(T))
+        Iterator() Iterator[T]
+}
+
+// Iterator represents a stateful iterator over elements
+type Iterator[T any] interface {
+
+        // HasNext returns true if there are more elements to iterate
+        HasNext() bool
+
+        // Next returns the next element and advances the iterator
+        // Panics if HasNext() is false
+        Next() T
+
+        // Peek returns the next element without advancing the iterator
+        // Panics if HasNext() is false
+        Peek() T
+
+        // Reset resets the iterator to the beginning
+        Reset()
+}
+
+// SliceIterator is a default iterator implementation for slices
+type SliceIterator[T comparable] struct {
+        elements []T
+        index    int
+}
+
+// Ensure SliceIterator implements Iterator
+var _ Iterator[int] = (*SliceIterator[int])(nil)
+
+func Of[T comparable](elements ...T) Iterator[T] <span class="cov0" title="0">{
+        return &amp;SliceIterator[T]{
+                elements: elements,
+                index:    0,
+        }
+}</span>
+
+func From[T comparable](collectable stream.Collectable[T]) Iterator[T] <span class="cov0" title="0">{
+        return &amp;SliceIterator[T]{
+                elements: collectable.Elements(),
+                index:    0,
+        }
+}</span>
+
+// HasNext returns true if there are more elements to iterate
+func (it *SliceIterator[T]) HasNext() bool <span class="cov0" title="0">{
+        return it.index &lt; len(it.elements)
+}</span>
+
+// Next returns the next element and advances the iterator
+func (it *SliceIterator[T]) Next() T <span class="cov0" title="0">{
+        if !it.HasNext() </span><span class="cov0" title="0">{
+                panic("iterator: no more elements")</span>
+        }
+        <span class="cov0" title="0">element := it.elements[it.index]
+        it.index++
+        return element</span>
+}
+
+// Peek returns the next element without advancing the iterator
+func (it *SliceIterator[T]) Peek() T <span class="cov0" title="0">{
+        if !it.HasNext() </span><span class="cov0" title="0">{
+                panic("iterator: no more elements")</span>
+        }
+        <span class="cov0" title="0">return it.elements[it.index]</span>
+}
+
+// Reset resets the iterator to the beginning
+func (it *SliceIterator[T]) Reset() <span class="cov0" title="0">{
+        it.index = 0
+}</span>
+
+// Remaining returns the number of elements left to iterate
+func (it *SliceIterator[T]) Remaining() int <span class="cov0" title="0">{
+        return len(it.elements) - it.index
+}</span>
+
+// Collect collects all remaining elements into a slice
+func (it *SliceIterator[T]) Collect() []T <span class="cov0" title="0">{
+        remaining := it.elements[it.index:]
+        it.index = len(it.elements)
+        return remaining
+}</span>
+
+// ForEach applies a function to all remaining elements
+func (it *SliceIterator[T]) ForEach(action func(T)) <span class="cov0" title="0">{
+        for it.HasNext() </span><span class="cov0" title="0">{
+                action(it.Next())
+        }</span>
+}
+
+// Filter returns a new iterator with only elements matching the predicate
+func (it *SliceIterator[T]) Filter(predicate func(T) bool) Iterator[T] <span class="cov0" title="0">{
+        filtered := make([]T, 0)
+        for it.HasNext() </span><span class="cov0" title="0">{
+                elem := it.Next()
+                if predicate(elem) </span><span class="cov0" title="0">{
+                        filtered = append(filtered, elem)
+                }</span>
+        }
+        <span class="cov0" title="0">return Of(filtered...)</span>
+}
+
+// Map transforms elements to a new type
+func Map[T, U comparable](it Iterator[T], mapper func(T) U) Iterator[U] <span class="cov0" title="0">{
+        mapped := make([]U, 0)
+        for it.HasNext() </span><span class="cov0" title="0">{
+                mapped = append(mapped, mapper(it.Next()))
+        }</span>
+        <span class="cov0" title="0">return Of(mapped...)</span>
+}
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package list
+
+import (
+        "slices"
+
+        "github.com/avila-r/ego/collection"
+        "github.com/avila-r/ego/iterator"
+        "github.com/avila-r/ego/stream"
+)
+
+type ArrayList[T comparable] struct {
+        elements []T
+}
+
+var _ collection.List[int] = (*ArrayList[int])(nil)
+
+func NewArrayList[T comparable](items ...T) *ArrayList[T] <span class="cov0" title="0">{
+        return &amp;ArrayList[T]{
+                elements: items,
+        }
+}</span>
+
+func EmptyArrayList[T comparable]() *ArrayList[T] <span class="cov9" title="25">{
+        return &amp;ArrayList[T]{
+                elements: []T{},
+        }
+}</span>
+
+func (l *ArrayList[T]) Add(items ...T) <span class="cov10" title="28">{
+        l.elements = append(l.elements, items...)
+}</span>
+
+func (l *ArrayList[T]) Get(index int) (T, bool) <span class="cov5" title="5">{
+        var zero T
+        if index &lt; 0 || index &gt;= len(l.elements) </span><span class="cov2" title="2">{
+                return zero, false
+        }</span>
+        <span class="cov3" title="3">return l.elements[index], true</span>
+}
+
+func (l *ArrayList[T]) Set(index int, value T) bool <span class="cov4" title="4">{
+        if index &lt; 0 || index &gt;= len(l.elements) </span><span class="cov1" title="1">{
+                return false
+        }</span>
+        <span class="cov3" title="3">l.elements[index] = value
+        return true</span>
+}
+
+func (l *ArrayList[T]) Remove(index int) bool <span class="cov5" title="5">{
+        if index &lt; 0 || index &gt;= len(l.elements) </span><span class="cov2" title="2">{
+                return false
+        }</span>
+        <span class="cov3" title="3">l.elements = append(l.elements[:index], l.elements[index+1:]...)
+        return true</span>
+}
+
+func (l *ArrayList[T]) Contains(value T) bool <span class="cov5" title="6">{
+        return slices.Contains(l.elements, value)
+}</span>
+
+func (l *ArrayList[T]) Size() int <span class="cov3" title="3">{
+        return len(l.elements)
+}</span>
+
+func (l *ArrayList[T]) IsEmpty() bool <span class="cov0" title="0">{
+        return len(l.elements) == 0
+}</span>
+
+func (l *ArrayList[T]) Clear() <span class="cov1" title="1">{
+        l.elements = []T{}
+}</span>
+
+func (l *ArrayList[T]) Items() []T <span class="cov8" title="14">{
+        return l.elements
+}</span>
+
+func (l *ArrayList[T]) Elements() []T <span class="cov0" title="0">{
+        return l.elements
+}</span>
+
+func (l *ArrayList[T]) Stream() stream.Stream[T] <span class="cov0" title="0">{
+        return stream.From(l)
+}</span>
+
+func (l *ArrayList[T]) ForEach(action func(T)) <span class="cov0" title="0">{
+        for _, item := range l.elements </span><span class="cov0" title="0">{
+                action(item)
+        }</span>
+}
+
+func (l *ArrayList[T]) Iterator() iterator.Iterator[T] <span class="cov0" title="0">{
+        return iterator.From(l)
+}</span>
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package list
+
+import (
+        "github.com/avila-r/ego/collection"
+)
+
+func New[T comparable]() collection.List[T] <span class="cov0" title="0">{
+        return EmptyArrayList[T]()
+}</span>
+
+func Empty[T comparable]() collection.List[T] <span class="cov0" title="0">{
+        return New[T]()
+}</span>
+
+func Of[T comparable](elements ...T) collection.List[T] <span class="cov0" title="0">{
+        list := New[T]()
+        list.Add(elements...)
+        return list
+}</span>
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package optional
+
+import "github.com/avila-r/failure"
+
+type Optional[T any] struct {
+        value *T
+}
+
+func Of[T any](value T) Optional[T] <span class="cov0" title="0">{
+        return Optional[T]{value: &amp;value}
+}</span>
+
+func Empty[T any]() Optional[T] <span class="cov0" title="0">{
+        return Optional[T]{}
+}</span>
+
+func (o *Optional[T]) IsPresent() bool <span class="cov0" title="0">{
+        return o.value != nil
+}</span>
+
+func (o *Optional[T]) IsEmpty() bool <span class="cov0" title="0">{
+        return o.value == nil
+}</span>
+
+func (o *Optional[T]) Join() T <span class="cov0" title="0">{
+        if !o.IsPresent() </span><span class="cov0" title="0">{
+                panic(ErrNoPresentValue)</span>
+        }
+        <span class="cov0" title="0">return *o.value</span>
+}
+
+func (o *Optional[T]) Get() (t T, ok bool) <span class="cov0" title="0">{
+        if o.IsEmpty() </span><span class="cov0" title="0">{
+                return
+        }</span>
+        <span class="cov0" title="0">return *o.value, true</span>
+}
+
+func (o *Optional[T]) Clear() <span class="cov0" title="0">{
+        o.value = nil
+}</span>
+
+func (o *Optional[T]) GetOrDefault(fallback T) T <span class="cov0" title="0">{
+        if o.IsPresent() </span><span class="cov0" title="0">{
+                return *o.value
+        }</span>
+        <span class="cov0" title="0">return fallback</span>
+}
+
+func (o *Optional[T]) Set(value T) <span class="cov0" title="0">{
+        o.value = &amp;value
+}</span>
+
+func (o *Optional[T]) Take() (*T, *failure.Error) <span class="cov0" title="0">{
+        if o.IsEmpty() </span><span class="cov0" title="0">{
+                return nil, ErrNoneValueTaken
+        }</span>
+        <span class="cov0" title="0">return o.value, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package pointer
+
+func Of[T any](v T) *T <span class="cov0" title="0">{
+        return &amp;v
+}</span>
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package promise
+
+import (
+        "context"
+        "errors"
+        "sync"
+        "time"
+)
+
+// Promise represents an asynchronous computation that will eventually produce a value or error
+type Promise[T any] struct {
+        mu     sync.RWMutex
+        done   chan Void
+        once   sync.Once
+        value  T
+        err    error
+        state  State
+        ctx    context.Context
+        cancel context.CancelFunc
+}
+
+type (
+        Void struct{}
+)
+
+type (
+        Runnable func()
+
+        Supplier[T any] func() (T, error)
+
+        Pipeline[T any] func(T) T
+
+        Consumer[T any] func(T)
+
+        Mapper[T any, R any] func(T) R
+
+        Composer[T any, R any] func(T) *Promise[R]
+
+        Recovery[T any] func(error) T
+
+        Handler[T any, R any] func(T, error) R
+)
+
+// Run creates a Promise that executes a function with no return value
+func Run(function Runnable) *Promise[Void] <span class="cov1" title="1">{
+        return Of(func() (Void, error) </span><span class="cov1" title="1">{
+                function()
+                return Void{}, nil
+        }</span>)
+}
+
+// Empty creates an incomplete Promise that can be manually completed
+func Empty[T any]() *Promise[T] <span class="cov5" title="8">{
+        ctx, cancel := context.WithCancel(context.Background())
+        return &amp;Promise[T]{
+                done:   make(chan Void),
+                state:  StateRunning,
+                ctx:    ctx,
+                cancel: cancel,
+        }
+}</span>
+
+// Of creates a Promise from a supplier function
+func Of[T any](supplier Supplier[T]) *Promise[T] <span class="cov9" title="55">{
+        ctx, cancel := context.WithCancel(context.Background())
+        p := &amp;Promise[T]{
+                done:   make(chan Void),
+                state:  StateRunning,
+                ctx:    ctx,
+                cancel: cancel,
+        }
+
+        go func() </span><span class="cov9" title="55">{
+                defer p.close()
+                value, err := supplier()
+                p.mu.Lock()
+                defer p.mu.Unlock()
+                p.value = value
+                p.err = err
+                if err != nil </span><span class="cov5" title="10">{
+                        p.state = StateFailed
+                }</span> else<span class="cov8" title="44"> {
+                        p.state = StateSuccess
+                }</span>
+        }()
+
+        <span class="cov9" title="55">return p</span>
+}
+
+// Supply is an alias for Of
+func Supply[T any](supplier Supplier[T]) *Promise[T] <span class="cov0" title="0">{
+        return Of(supplier)
+}</span>
+
+// Completed creates a Promise that is already completed with a value
+func Completed[T any](value T) *Promise[T] <span class="cov6" title="18">{
+        ctx, cancel := context.WithCancel(context.Background())
+        p := &amp;Promise[T]{
+                done:   make(chan Void),
+                value:  value,
+                state:  StateSuccess,
+                ctx:    ctx,
+                cancel: cancel,
+        }
+        p.close()
+        return p
+}</span>
+
+// Done is an alias for Completed
+func Done[T any](value T) *Promise[T] <span class="cov0" title="0">{
+        return Completed(value)
+}</span>
+
+// Then applies a transformation function and returns the same Promise
+func (p *Promise[T]) Then(pipeline Pipeline[T]) *Promise[T] <span class="cov4" title="7">{
+        return p.ThenWithConcurrency(Async, pipeline)
+}</span>
+
+// ThenWithConcurrency applies a pipeline with specified concurrency
+func (p *Promise[T]) ThenWithConcurrency(concurrency Concurrency, pipeline Pipeline[T]) *Promise[T] <span class="cov4" title="7">{
+        &lt;-p.done
+        p.mu.Lock()
+        defer p.mu.Unlock()
+
+        if p.err != nil </span><span class="cov1" title="1">{
+                return p
+        }</span>
+
+        <span class="cov4" title="6">if concurrency.IsAsync() </span><span class="cov4" title="6">{
+                return Of(func() (T, error) </span><span class="cov4" title="6">{
+                        return pipeline(p.value), nil
+                }</span>)
+        }
+
+        <span class="cov0" title="0">p.value = pipeline(p.value)
+        return p</span>
+}
+
+// ThenAccept consumes the value and returns a Void Promise
+func (p *Promise[T]) ThenAccept(consumer Consumer[T]) *Promise[Void] <span class="cov2" title="2">{
+        return p.ThenAcceptWithConcurrency(Async, consumer)
+}</span>
+
+// ThenAcceptWithConcurrency consumes the value with specified concurrency
+func (p *Promise[T]) ThenAcceptWithConcurrency(concurrency Concurrency, consumer Consumer[T]) *Promise[Void] <span class="cov2" title="2">{
+        if concurrency.IsAsync() </span><span class="cov2" title="2">{
+                return Of(func() (Void, error) </span><span class="cov2" title="2">{
+                        &lt;-p.done
+                        p.mu.RLock()
+                        defer p.mu.RUnlock()
+                        if p.err != nil </span><span class="cov0" title="0">{
+                                return Void{}, p.err
+                        }</span>
+                        <span class="cov2" title="2">consumer(p.value)
+                        return Void{}, nil</span>
+                })
+        }
+
+        <span class="cov0" title="0">&lt;-p.done
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        if p.err != nil </span><span class="cov0" title="0">{
+                return Completed(Void{})
+        }</span>
+        <span class="cov0" title="0">consumer(p.value)
+        return Completed(Void{})</span>
+}
+
+// ThenRun executes an action and returns a Void Promise
+func (p *Promise[T]) ThenRun(action Runnable) *Promise[Void] <span class="cov1" title="1">{
+        return p.ThenRunWithConcurrency(Async, action)
+}</span>
+
+// ThenRunWithConcurrency executes an action with specified concurrency
+func (p *Promise[T]) ThenRunWithConcurrency(concurrency Concurrency, action Runnable) *Promise[Void] <span class="cov1" title="1">{
+        if concurrency.IsAsync() </span><span class="cov1" title="1">{
+                return Of(func() (Void, error) </span><span class="cov1" title="1">{
+                        &lt;-p.done
+                        action()
+                        return Void{}, nil
+                }</span>)
+        }
+
+        <span class="cov0" title="0">&lt;-p.done
+        action()
+        return Completed(Void{})</span>
+}
+
+// Map transforms the Promise value to a different type
+func Map[T any, R any](p *Promise[T], mapper Mapper[T, R]) *Promise[R] <span class="cov4" title="6">{
+        return MapWithConcurrency(p, Async, mapper)
+}</span>
+
+// MapWithConcurrency transforms the Promise value with specified concurrency
+func MapWithConcurrency[T any, R any](p *Promise[T], concurrency Concurrency, mapper Mapper[T, R]) *Promise[R] <span class="cov4" title="6">{
+        if concurrency.IsAsync() </span><span class="cov4" title="6">{
+                return Of(func() (R, error) </span><span class="cov4" title="6">{
+                        &lt;-p.done
+                        p.mu.RLock()
+                        defer p.mu.RUnlock()
+                        if p.err != nil </span><span class="cov1" title="1">{
+                                var zero R
+                                return zero, p.err
+                        }</span>
+                        <span class="cov4" title="5">return mapper(p.value), nil</span>
+                })
+        }
+
+        <span class="cov0" title="0">&lt;-p.done
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        if p.err != nil </span><span class="cov0" title="0">{
+                var zero R
+                return Completed(zero)
+        }</span>
+        <span class="cov0" title="0">return Completed(mapper(p.value))</span>
+}
+
+// Compose chains Promises together (flatMap)
+func Compose[T any, R any](p *Promise[T], composer Composer[T, R]) *Promise[R] <span class="cov2" title="2">{
+        return ComposeWithConcurrency(p, Async, composer)
+}</span>
+
+// ComposeWithConcurrency chains Promises with specified concurrency
+func ComposeWithConcurrency[T any, R any](p *Promise[T], concurrency Concurrency, composer Composer[T, R]) *Promise[R] <span class="cov2" title="2">{
+        if concurrency.IsAsync() </span><span class="cov2" title="2">{
+                return Of(func() (R, error) </span><span class="cov2" title="2">{
+                        &lt;-p.done
+                        p.mu.RLock()
+                        if p.err != nil </span><span class="cov0" title="0">{
+                                p.mu.RUnlock()
+                                var zero R
+                                return zero, p.err
+                        }</span>
+                        <span class="cov2" title="2">val := p.value
+                        p.mu.RUnlock()
+
+                        nextPromise := composer(val)
+                        &lt;-nextPromise.done
+                        nextPromise.mu.RLock()
+                        defer nextPromise.mu.RUnlock()
+                        return nextPromise.value, nextPromise.err</span>
+                })
+        }
+
+        <span class="cov0" title="0">&lt;-p.done
+        p.mu.RLock()
+        if p.err != nil </span><span class="cov0" title="0">{
+                p.mu.RUnlock()
+                var zero R
+                return Completed(zero)
+        }</span>
+        <span class="cov0" title="0">val := p.value
+        p.mu.RUnlock()
+
+        return composer(val)</span>
+}
+
+// Exceptionally handles errors and provides a recovery value
+func (p *Promise[T]) Exceptionally(recovery Recovery[T]) *Promise[T] <span class="cov3" title="3">{
+        return p.ExceptionallyWithConcurrency(Async, recovery)
+}</span>
+
+// Recover is an alias for Exceptionally
+func (p *Promise[T]) Recover(recovery Recovery[T]) *Promise[T] <span class="cov1" title="1">{
+        return p.Exceptionally(recovery)
+}</span>
+
+// ExceptionallyWithConcurrency handles errors with specified concurrency
+func (p *Promise[T]) ExceptionallyWithConcurrency(concurrency Concurrency, recovery Recovery[T]) *Promise[T] <span class="cov3" title="3">{
+        if concurrency.IsAsync() </span><span class="cov3" title="3">{
+                return Of(func() (T, error) </span><span class="cov3" title="3">{
+                        &lt;-p.done
+                        p.mu.RLock()
+                        defer p.mu.RUnlock()
+                        if p.err != nil </span><span class="cov2" title="2">{
+                                return recovery(p.err), nil
+                        }</span>
+                        <span class="cov1" title="1">return p.value, nil</span>
+                })
+        }
+
+        <span class="cov0" title="0">&lt;-p.done
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        if p.err != nil </span><span class="cov0" title="0">{
+                return Completed(recovery(p.err))
+        }</span>
+        <span class="cov0" title="0">return Completed(p.value)</span>
+}
+
+// Handle processes both success and error cases
+func Handle[T any, R any](p *Promise[T], handler Handler[T, R]) *Promise[R] <span class="cov2" title="2">{
+        return HandleWithConcurrency(p, Async, handler)
+}</span>
+
+// HandleWithConcurrency processes both cases with specified concurrency
+func HandleWithConcurrency[T any, R any](p *Promise[T], concurrency Concurrency, handler Handler[T, R]) *Promise[R] <span class="cov2" title="2">{
+        if concurrency.IsAsync() </span><span class="cov2" title="2">{
+                return Of(func() (R, error) </span><span class="cov2" title="2">{
+                        &lt;-p.done
+                        p.mu.RLock()
+                        defer p.mu.RUnlock()
+                        return handler(p.value, p.err), nil
+                }</span>)
+        }
+
+        <span class="cov0" title="0">&lt;-p.done
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        return Completed(handler(p.value, p.err))</span>
+}
+
+// Join blocks until the Promise completes and returns the value or panics on error
+func (p *Promise[T]) Join() T <span class="cov2" title="2">{
+        &lt;-p.done
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        if p.err != nil </span><span class="cov1" title="1">{
+                panic(p.err)</span>
+        }
+        <span class="cov1" title="1">return p.value</span>
+}
+
+// Get blocks until the Promise completes and returns the value and error
+func (p *Promise[T]) Get() (T, error) <span class="cov9" title="50">{
+        &lt;-p.done
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        return p.value, p.err
+}</span>
+
+// Complete manually completes the Promise with a value
+func (p *Promise[T]) Complete(value T) bool <span class="cov4" title="5">{
+        p.mu.Lock()
+        defer p.mu.Unlock()
+
+        if p.state != StateRunning </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov4" title="5">p.value = value
+        p.state = StateSuccess
+        p.close()
+        return true</span>
+}
+
+// CompleteExceptionally manually completes the Promise with an error
+func (p *Promise[T]) CompleteExceptionally(err error) bool <span class="cov3" title="3">{
+        p.mu.Lock()
+        defer p.mu.Unlock()
+
+        if p.state != StateRunning </span><span class="cov0" title="0">{
+                return false
+        }</span>
+
+        <span class="cov3" title="3">p.err = err
+        p.state = StateFailed
+        p.close()
+        return true</span>
+}
+
+// Timeout sets a timeout for the Promise
+func (p *Promise[T]) Timeout(duration time.Duration) *Promise[T] <span class="cov2" title="2">{
+        go func() </span><span class="cov2" title="2">{
+                select </span>{
+                case &lt;-p.done:<span class="cov1" title="1">
+                        return</span>
+                case &lt;-time.After(duration):<span class="cov1" title="1">
+                        p.CompleteExceptionally(errors.New("promise timeout"))</span>
+                }
+        }()
+        <span class="cov2" title="2">return p</span>
+}
+
+// Threshold is an alias for Timeout
+func (p *Promise[T]) Threshold(duration time.Duration) *Promise[T] <span class="cov0" title="0">{
+        return p.Timeout(duration)
+}</span>
+
+// CompleteOnTimeout completes with a default value if timeout occurs
+func (p *Promise[T]) CompleteOnTimeout(value T, duration time.Duration) *Promise[T] <span class="cov2" title="2">{
+        go func() </span><span class="cov2" title="2">{
+                select </span>{
+                case &lt;-p.done:<span class="cov1" title="1">
+                        return</span>
+                case &lt;-time.After(duration):<span class="cov1" title="1">
+                        p.Complete(value)</span>
+                }
+        }()
+        <span class="cov2" title="2">return p</span>
+}
+
+// IsDone returns true if the Promise has completed
+func (p *Promise[T]) IsDone() bool <span class="cov5" title="9">{
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        return p.state != StateRunning
+}</span>
+
+// IsCompleted is an alias for IsDone
+func (p *Promise[T]) IsCompleted() bool <span class="cov0" title="0">{
+        return p.IsDone()
+}</span>
+
+// IsSuccess returns true if the Promise completed successfully
+func (p *Promise[T]) IsSuccess() bool <span class="cov4" title="5">{
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        return p.state == StateSuccess
+}</span>
+
+// IsCancelled returns true if the Promise was cancelled
+func (p *Promise[T]) IsCancelled() bool <span class="cov0" title="0">{
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        return p.state == StateCancelled
+}</span>
+
+// IsError returns true if the Promise completed with an error
+func (p *Promise[T]) IsError() bool <span class="cov2" title="2">{
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        return p.state == StateFailed
+}</span>
+
+// IsCompletedExceptionally is an alias for IsError
+func (p *Promise[T]) IsCompletedExceptionally() bool <span class="cov0" title="0">{
+        return p.IsError()
+}</span>
+
+// State returns the current state of the Promise
+func (p *Promise[T]) State() State <span class="cov3" title="3">{
+        p.mu.RLock()
+        defer p.mu.RUnlock()
+        return p.state
+}</span>
+
+// Cancel cancels the Promise's context
+func (p *Promise[T]) Cancel() <span class="cov0" title="0">{
+        p.mu.Lock()
+        defer p.mu.Unlock()
+        if p.state == StateRunning </span><span class="cov0" title="0">{
+                p.state = StateCancelled
+                p.cancel()
+                p.close()
+        }</span>
+}
+
+// Context returns the Promise's context
+func (p *Promise[T]) Context() context.Context <span class="cov0" title="0">{
+        return p.ctx
+}</span>
+
+// close safely closes the done channel only once
+func (p *Promise[T]) close() <span class="cov10" title="80">{
+        p.once.Do(func() </span><span class="cov9" title="79">{
+                close(p.done)
+        }</span>)
+}
+</pre>
+		
+		<pre class="file" id="file21" style="display: none">package promise
+
+// State represents the current state of a Promise
+type State int
+
+const (
+        StateRunning State = iota
+        StateSuccess
+        StateFailed
+        StateCancelled
+)
+
+func (s State) String() string <span class="cov0" title="0">{
+        return []string{"Running", "Success", "Failed", "Cancelled"}[s]
+}</span>
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package promise
+
+// Concurrency determines whether operations run synchronously or asynchronously
+type Concurrency int
+
+const (
+        Sync Concurrency = iota
+        Async
+)
+
+func (c Concurrency) IsAsync() bool <span class="cov10" title="22">{
+        return c == Async
+}</span>
+</pre>
+		
+		<pre class="file" id="file23" style="display: none">package result
+
+import "github.com/avila-r/failure"
+
+type Result[T any] struct {
+        value *T
+        err   error
+}
+
+func Of[T any](v T, e error) Result[T] <span class="cov0" title="0">{
+        return Result[T]{
+                value: &amp;v,
+                err:   e,
+        }
+}</span>
+
+func Ok[T any](value T) Result[T] <span class="cov0" title="0">{
+        return Result[T]{
+                value: &amp;value,
+                err:   nil,
+        }
+}</span>
+
+func Error[T any](err error) Result[T] <span class="cov0" title="0">{
+        return Result[T]{
+                value: nil,
+                err:   err,
+        }
+}</span>
+
+func Err[T any](err error) Result[T] <span class="cov0" title="0">{
+        return Error[T](err)
+}</span>
+
+func (r Result[T]) Value() *T <span class="cov0" title="0">{
+        return r.value
+}</span>
+
+func (r Result[T]) Error() error <span class="cov0" title="0">{
+        if r.err == nil &amp;&amp; r.IsEmpty() </span><span class="cov0" title="0">{
+                return ErrEmptyResult
+        }</span>
+        <span class="cov0" title="0">return r.err</span>
+}
+
+func (r Result[T]) IsEmpty() bool <span class="cov0" title="0">{
+        return r.value == nil
+}</span>
+
+func (r Result[T]) IsSuccess() bool <span class="cov0" title="0">{
+        return r.Error() == nil &amp;&amp; r.value != nil
+}</span>
+
+func (r Result[T]) IsError() bool <span class="cov0" title="0">{
+        return r.Error() != nil || r.value == nil
+}</span>
+
+func (r Result[T]) Unwrap() T <span class="cov0" title="0">{
+        return *r.value
+}</span>
+
+func (o Result[T]) Take() (*T, *failure.Error) <span class="cov0" title="0">{
+        if o.IsEmpty() </span><span class="cov0" title="0">{
+                return nil, ErrNoneValueTaken
+        }</span>
+        <span class="cov0" title="0">return o.value, nil</span>
+}
+
+func (r Result[T]) Join() T <span class="cov0" title="0">{
+        if r.IsError() </span><span class="cov0" title="0">{
+                panic(r.Error())</span>
+        }
+        <span class="cov0" title="0">return *r.value</span>
+}
+
+func (r Result[T]) Expect(message ...string) T <span class="cov0" title="0">{
+        var msg string
+        if len(message) &gt; 0 </span><span class="cov0" title="0">{
+                msg = message[0]
+        }</span> else<span class="cov0" title="0"> {
+                msg = r.Error().Error()
+        }</span>
+
+        <span class="cov0" title="0">if r.IsError() </span><span class="cov0" title="0">{
+                panic(msg)</span>
+        }
+
+        <span class="cov0" title="0">return *r.value</span>
+}
+</pre>
+		
+		<pre class="file" id="file24" style="display: none">package slice
+
+import (
+        "slices"
+
+        "github.com/avila-r/ego/optional"
+        "github.com/avila-r/ego/stream"
+)
+
+func Of[T any](values ...T) []T <span class="cov0" title="0">{
+        return values
+}</span>
+
+func New[T any]() []T <span class="cov0" title="0">{
+        return []T{}
+}</span>
+
+func Empty[T any]() []T <span class="cov0" title="0">{
+        return New[T]()
+}</span>
+
+func Append[T any](at []T, t ...T) []T <span class="cov0" title="0">{
+        return append(at, t...)
+}</span>
+
+func Add[T any](at *[]T, t ...T) <span class="cov0" title="0">{
+        *at = append(*at, t...)
+}</span>
+
+func Filter[S ~[]E, E any](values S, filter func(v E) bool) S <span class="cov0" title="0">{
+        result := S{}
+
+        for _, v := range values </span><span class="cov0" title="0">{
+                if filter(v) </span><span class="cov0" title="0">{
+                        result = append(result, v)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return result</span>
+}
+
+func IsEmpty[T any](t []T) bool <span class="cov0" title="0">{
+        return len(t) == 0
+}</span>
+
+func First[T any](t []T) optional.Optional[T] <span class="cov0" title="0">{
+        return optional.Of(t[0])
+}</span>
+
+func Last[T any](t []T) optional.Optional[T] <span class="cov0" title="0">{
+        if IsEmpty(t) </span><span class="cov0" title="0">{
+                return optional.Empty[T]()
+        }</span>
+
+        <span class="cov0" title="0">v := t[len(t)-1]
+
+        return optional.Of(v)</span>
+}
+
+func Size[T any](t []T) int <span class="cov0" title="0">{
+        return len(t)
+}</span>
+
+func IsNil[T any](t []T) bool <span class="cov0" title="0">{
+        return t == nil
+}</span>
+
+func Stream[T comparable](t []T) stream.Stream[T] <span class="cov0" title="0">{
+        return stream.Of(t...)
+}</span>
+
+func ForEach[T any](s []T, f func(T)) <span class="cov0" title="0">{
+        for _, v := range s </span><span class="cov0" title="0">{
+                f(v)
+        }</span>
+}
+
+func Map[T any, R any](s []T, mapper func(T) R) []R <span class="cov0" title="0">{
+        result := make([]R, len(s))
+        for i, v := range s </span><span class="cov0" title="0">{
+                result[i] = mapper(v)
+        }</span>
+        <span class="cov0" title="0">return result</span>
+}
+
+func Reduce[T any, R any](s []T, initial R, reducer func(R, T) R) R <span class="cov0" title="0">{
+        acc := initial
+        for _, v := range s </span><span class="cov0" title="0">{
+                acc = reducer(acc, v)
+        }</span>
+        <span class="cov0" title="0">return acc</span>
+}
+
+func Contains[T comparable](s []T, value T) bool <span class="cov0" title="0">{
+        return slices.Contains(s, value)
+}</span>
+
+func IndexOf[T comparable](s []T, value T) int <span class="cov0" title="0">{
+        for i, v := range s </span><span class="cov0" title="0">{
+                if v == value </span><span class="cov0" title="0">{
+                        return i
+                }</span>
+        }
+        <span class="cov0" title="0">return -1</span>
+}
+
+func Reverse[T any](s []T) []T <span class="cov0" title="0">{
+        result := make([]T, len(s))
+        for i, v := range s </span><span class="cov0" title="0">{
+                result[len(s)-1-i] = v
+        }</span>
+        <span class="cov0" title="0">return result</span>
+}
+
+func Clone[T any](s []T) []T <span class="cov0" title="0">{
+        result := make([]T, len(s))
+        copy(result, s)
+        return result
+}</span>
+
+func Unique[T comparable](s []T) []T <span class="cov0" title="0">{
+        seen := map[T]struct{}{}
+        result := []T{}
+        for _, v := range s </span><span class="cov0" title="0">{
+                if _, ok := seen[v]; !ok </span><span class="cov0" title="0">{
+                        seen[v] = struct{}{}
+                        result = append(result, v)
+                }</span>
+        }
+        <span class="cov0" title="0">return result</span>
+}
+
+func Clear[T any](s *[]T) <span class="cov0" title="0">{
+        *s = (*s)[:0]
+}</span>
+</pre>
+		
+		<pre class="file" id="file25" style="display: none">package stream
+
+type Stream[T comparable] struct {
+        elements []T
+}
+
+func Of[T comparable](elements ...T) Stream[T] <span class="cov0" title="0">{
+        return Stream[T]{elements: elements}
+}</span>
+
+func From[T comparable](collectable Collectable[T]) Stream[T] <span class="cov0" title="0">{
+        return Stream[T]{elements: collectable.Elements()}
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
