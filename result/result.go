@@ -393,7 +393,7 @@ func (r Result[T]) OkOr(err error) Result[T] {
 }
 
 // ExpectErr panics with a message if the result is Ok (useful for testing)
-func (r *Result[T]) ExpectErr(message string) error {
+func (r Result[T]) ExpectErr(message string) error {
 	if r.IsSuccess() {
 		panic(message)
 	}
