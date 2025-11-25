@@ -1,34 +1,20 @@
 # Result Package Guide
 
-A comprehensive guide to using the `result` package for elegant error handling in Go.
+A comprehensive, concise guide to `result.Result[T]` for explicit, ergonomic error handling.
 
-## Table of Contents
+## What Is Result?
 
-1. [What is Result?](#what-is-result)
-2. [Creating Results](#creating-results)
-3. [Checking Result State](#checking-result-state)
-4. [Extracting Values](#extracting-values)
-5. [Mutating Results](#mutating-results)
-6. [Named Returns Pattern](#named-returns-pattern)
-7. [Real-World Examples](#real-world-examples)
-8. [Best Practices](#best-practices)
-
-## What is Result?
-
-`Result[T]` is a container type that represents either a successful value of type `T` or an error. It's similar to Rust's `Result` type and helps you handle errors in a more functional way.
+`Result[T]` is a container type that represents either a successful value of type `T` or an error. It helps you handle errors in a more functional way.
 
 ```go
 type Result[T any]
 ```
 
-Currently, the API is simple, but we are massively extending this container into the vanguard of Go error handling.
+Key goals:
 
-**Why use Result?**
-
-- Makes error handling explicit
-- Prevents forgotten error checks
-- Enables functional error handling patterns
-- Great for named return values
+- Explicit success/error state
+- Safer extraction utilities (no forgotten error checks)
+- Functional helpers for mapping, chaining, and recovery
 
 ## Creating Results
 
@@ -235,6 +221,153 @@ r := result.Ok(10)
 r.Success(20).Success(30).Success(40)
 
 fmt.Println(r.Unwrap()) // 40
+```
+
+## Transformations (same T)
+
+Operate when Ok; otherwise propagate the error unchanged.
+
+```go
+r := result.Ok(10)
+
+// Map within same type
+r = r.Map(func(n int) int { 
+    return n * 2 
+})
+
+// Map with default fallbacks
+x := r.MapOr(0, func(n int) int { 
+    return n + 1 
+})
+
+// FlatMap-style chaining within same type
+r = r.FlatMap(func(n int) result.Result[int] { 
+    return result.Ok(n + 5) 
+})
+
+r = r.Bind(func(n int) result.Result[int] { 
+    return result.Ok(n - 1) 
+})
+
+// Side-effect hooks
+r = r.OnSuccess(func(n int) { 
+    fmt.Println("ok:", n) 
+})
+
+// Tap observes the whole Result and returns it unchanged
+r = r.Tap(func(rr result.Result[int]) { /* metrics/logs */ })
+```
+
+## Generic Transformations (T → R)
+
+Change types using the package-level functions.
+
+```go
+ri := result.Ok(42)
+
+// T -> R
+rs := result.Map(ri, func(n int) string { 
+    return fmt.Sprintf("n=%d", n) 
+})
+
+// With defaults
+_ = result.MapOr(ri, "0", func(n int) string { 
+    return strconv.Itoa(n) 
+})
+
+_ = result.MapOrElse(ri, func(err error) string { return "err" }, func(n int) string { 
+    return strconv.Itoa(n) 
+})
+
+// FlatMap across types
+rx := result.FlatMap(ri, func(n int) result.Result[float64] { 
+    return result.Ok(float64(n) * 1.5) 
+})
+
+// Aliases
+_ = result.AndThen(ri, func(n int) result.Result[string] { 
+    return result.Ok("ok") 
+})
+
+_ = result.Bind(ri, func(n int) result.Result[string] { 
+    return result.Ok("ok")
+})
+```
+
+Utilities:
+
+- `Flatten(Result[Result[T]]) Result[T]`
+- `Chain(initial, ops...)` short-circuits on first error
+- `Match(onSuccess, onFailure)` side-effect pattern match
+- `MatchReturn(r, onSuccess, onFailure) U` returns a value
+
+## Error Handling Utilities
+
+```go
+// Replace/transform errors
+r = r.MapErr(func(err error) error { 
+    return fmt.Errorf("wrap: %w", err) 
+})
+
+r = r.OkOr(failure.New("fallback error")) // replace any error with the fallback
+
+// Recovery
+r = r.Recover(func(err error) int { 
+    return 0 
+})
+
+// Assertions
+_ = r.ExpectErr("should be error in this path")
+
+_ = r.UnwrapErr()
+
+// Predicates
+_ = r.Contains(10, func(a, b int) bool { 
+    return a == b 
+})
+
+_ = r.ContainsErr(func(err error) bool { 
+    return errors.Is(err, io.EOF) 
+})
+```
+
+## Combining & Collecting
+
+```go
+// Combine two different Results
+a := result.Ok(1)
+
+pair := result.Combine(a, b) // Result[{ First int; Second string }]
+
+// Iterate/collect
+_ = a.Iter() // []T with 0 or 1 element
+
+all := []result.Result[int]{ 
+    result.Ok(1), 
+    result.Ok(2),
+}
+
+col := result.Collect(all) // Result[[]int]
+
+succ, fails := result.Partition(all) // ([]T, []error)
+```
+
+## Interop & Try Helpers
+
+```go
+// Convert to/from classic (*T, error)
+ptr, err := a.ToPointer()
+
+_ = result.FromPointer(ptr, err)
+
+// Capture panics or wrap fallible funcs
+safe := result.Try(func() int { 
+    return 7 
+})
+
+res := result.TryWith(func() (int, error) { 
+    return 1, nil 
+})
 ```
 
 ## Named Returns Pattern
@@ -597,6 +730,21 @@ if v := r.Value(); v != nil {
 | `Success(v)` | `Result[T]` | No | Set success value |
 | `Ok(v)` | `Result[T]` | No | Alias for Success() |
 | `Failure(e)` | `Result[T]` | No | Set error |
+
+| Kind | API | Notes |
+|------|-----|-------|
+| Create | `Of(v, err)`, `Ok(v)`, `Error(err)`, `Failure(err)` | Constructors |
+| State | `IsSuccess()`, `IsError()`, `IsEmpty()` | Inspect state |
+| Extract | `Value()`, `Error()`, `Unwrap()`, `Join()`, `Expect(msg)`, `Take()` | Get value/error |
+| Defaults | `UnwrapOr(v)`, `UnwrapOrElse(f)`, `UnwrapOrDefault()` | Fallbacks |
+| Mutate | `Success(v)`, `Ok(v)`, `Failure(err)` | In-place, named returns |
+| Same-T map | `Map`, `MapOr`, `MapOrElse`, `FlatMap`, `AndThen`, `Bind` (methods) | When Ok only |
+| T→R map | `result.Map`, `MapOr`, `MapOrElse`, `FlatMap`, `AndThen`, `Bind` (funcs) | Cross-type |
+| Hooks | `OnSuccess`, `OnFailure`, `Inspect`, `InspectErr`, `Tap` | Side effects |
+| Errors | `MapErr`, `OkOr`, `ExpectErr`, `UnwrapErr`, `Recover`, `RecoverWith` | Error focus |
+| Combine | `Combine`, `Collect`, `Partition`, `Iter` | Multi-result ops |
+| Interop | `ToPointer`, `FromPointer`, `Transpose` | (*T, error) bridge |
+| Try | `Try`, `TryWith` | Panic/fallible wrappers |
 
 ---
 
