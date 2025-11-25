@@ -189,9 +189,9 @@ func (r Result[T]) OrElse(f func(error) Result[T]) Result[T] {
 }
 
 // And returns other if this is Ok, otherwise returns this error
-func (r *Result[T]) And(other Result[T]) Result[T] {
+func (r Result[T]) And(other Result[T]) Result[T] {
 	if r.IsError() {
-		return *r
+		return r
 	}
 	return other
 }
