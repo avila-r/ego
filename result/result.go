@@ -401,7 +401,7 @@ func (r Result[T]) ExpectErr(message string) error {
 }
 
 // UnwrapErr returns the error, panics if Ok
-func (r *Result[T]) UnwrapErr() error {
+func (r Result[T]) UnwrapErr() error {
 	if r.IsSuccess() {
 		panic("called UnwrapErr on an Ok value")
 	}
