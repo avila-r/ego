@@ -302,7 +302,7 @@ func Try[T any](f func() T) Result[T] {
 			if err, ok := r.(error); ok {
 				result = Error[T](err)
 			} else {
-				result = Error[T](failure.New("panic occurred"))
+				result = Error[T](failure.New("panic occurred: %v", r))
 			}
 		}
 	}()
