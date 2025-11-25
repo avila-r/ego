@@ -1,6 +1,8 @@
 package maps
 
 import (
+	"reflect"
+
 	"github.com/avila-r/ego/collection"
 	"github.com/avila-r/ego/iterator"
 )
@@ -124,7 +126,7 @@ func (m *LinkedHashMap[K, V]) ContainsKey(key K) bool {
 func (m *LinkedHashMap[K, V]) ContainsValue(value V) bool {
 	current := m.head
 	for current != nil {
-		if any(current.value) == any(value) {
+		if reflect.DeepEqual(current.value, value) {
 			return true
 		}
 		current = current.next

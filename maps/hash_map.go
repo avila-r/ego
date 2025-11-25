@@ -1,6 +1,8 @@
 package maps
 
 import (
+	"reflect"
+
 	"github.com/avila-r/ego/collection"
 	"github.com/avila-r/ego/iterator"
 )
@@ -61,7 +63,7 @@ func (m *HashMap[K, V]) ContainsKey(key K) bool {
 
 func (m *HashMap[K, V]) ContainsValue(value V) bool {
 	for _, v := range m.elements {
-		if any(v) == any(value) {
+		if reflect.DeepEqual(v, value) {
 			return true
 		}
 	}
