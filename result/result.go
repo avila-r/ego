@@ -219,7 +219,7 @@ func (r Result[T]) UnwrapOrDefault() T {
 }
 
 // Contains checks if the result contains the given value
-func (r *Result[T]) Contains(value T, equals func(T, T) bool) bool {
+func (r Result[T]) Contains(value T, equals func(T, T) bool) bool {
 	if r.IsError() {
 		return false
 	}
