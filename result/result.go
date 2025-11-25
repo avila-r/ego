@@ -287,7 +287,7 @@ func Flatten[T any](r Result[Result[T]]) Result[T] {
 }
 
 // Transpose converts Result[*T] to *Result[T] style handling
-func (r *Result[T]) Transpose() (*T, error) {
+func (r Result[T]) Transpose() (*T, error) {
 	if r.IsError() {
 		return nil, r.err
 	}
@@ -323,7 +323,7 @@ func (r Result[T]) Tap(f func(Result[T])) Result[T] {
 }
 
 // ToPointer converts Result[T] to traditional Go (*T, error) pattern
-func (r *Result[T]) ToPointer() (*T, error) {
+func (r Result[T]) ToPointer() (*T, error) {
 	return r.Transpose()
 }
 
