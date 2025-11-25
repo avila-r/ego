@@ -26,7 +26,7 @@ type Iterator[T any] interface {
 }
 
 // SliceIterator is a default iterator implementation for slices
-type SliceIterator[T comparable] struct {
+type SliceIterator[T any] struct {
 	elements []T
 	index    int
 }
@@ -34,14 +34,14 @@ type SliceIterator[T comparable] struct {
 // Ensure SliceIterator implements Iterator
 var _ Iterator[int] = (*SliceIterator[int])(nil)
 
-func Of[T comparable](elements ...T) Iterator[T] {
+func Of[T any](elements ...T) Iterator[T] {
 	return &SliceIterator[T]{
 		elements: elements,
 		index:    0,
 	}
 }
 
-func From[T comparable](collectable stream.Collectable[T]) Iterator[T] {
+func From[T any](collectable stream.Collectable[T]) Iterator[T] {
 	return &SliceIterator[T]{
 		elements: collectable.Elements(),
 		index:    0,
