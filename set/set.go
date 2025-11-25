@@ -12,18 +12,20 @@ func NewSet[E comparable](elements []E) *Set[E] {
 	return set
 }
 
-func (s *Set[E]) Size() int64 {
-	return int64(len(s.elements))
+func (s *Set[E]) Size() int {
+	return len(s.elements)
 }
 
 func (s *Set[E]) IsEmpty() bool {
 	return s.Size() == 0
 }
 
-func (s *Set[E]) Add(element E) {
+func (s *Set[E]) Add(element E) bool {
 	if !s.Contains(element) {
 		s.elements = append(s.elements, element)
+		return true
 	}
+	return false
 }
 
 func (s *Set[E]) AddAll(elements ...E) {
@@ -114,15 +116,18 @@ func (s *Set[E]) ToSlice() []E {
 	return result
 }
 
-func (s *Set[E]) Union(other *Set[E]) *Set[E] {
-	result := NewSet(s.ToSlice())
-	for _, element := range other.elements {
+func (s *Set[E]) Union(other Settable[E]) Settable[E] {
+	result := NewSet([]E{})
+	for _, element := range s.elements {
+		result.Add(element)
+	}
+	for _, element := range other.ToSlice() {
 		result.Add(element)
 	}
 	return result
 }
 
-func (s *Set[E]) Intersection(other *Set[E]) *Set[E] {
+func (s *Set[E]) Intersection(other Settable[E]) Settable[E] {
 	result := NewSet([]E{})
 	for _, element := range s.elements {
 		if other.Contains(element) {
@@ -132,7 +137,7 @@ func (s *Set[E]) Intersection(other *Set[E]) *Set[E] {
 	return result
 }
 
-func (s *Set[E]) Difference(other *Set[E]) *Set[E] {
+func (s *Set[E]) Difference(other Settable[E]) Settable[E] {
 	result := NewSet([]E{})
 	for _, element := range s.elements {
 		if !other.Contains(element) {
