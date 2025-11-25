@@ -197,7 +197,7 @@ func (r *Result[T]) And(other Result[T]) Result[T] {
 }
 
 // UnwrapOr returns the value if Ok, otherwise returns the default value
-func (r *Result[T]) UnwrapOr(defaultValue T) T {
+func (r Result[T]) UnwrapOr(defaultValue T) T {
 	if r.IsError() {
 		return defaultValue
 	}
