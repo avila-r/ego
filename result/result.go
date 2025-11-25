@@ -409,7 +409,7 @@ func (r *Result[T]) UnwrapErr() error {
 }
 
 // Iter returns a slice with the value if Ok, empty slice if Error
-func (r *Result[T]) Iter() []T {
+func (r Result[T]) Iter() []T {
 	if r.IsError() {
 		return []T{}
 	}
