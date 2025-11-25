@@ -121,7 +121,11 @@ func (m *HashMap[K, V]) Values() collection.Collection[V] {
 }
 
 func (m *HashMap[K, V]) Elements() map[K]V {
-	return m.elements
+	result := make(map[K]V, len(m.elements))
+	for k, v := range m.elements {
+		result[k] = v
+	}
+	return result
 }
 
 func (m *HashMap[K, V]) Entries() collection.Collection[collection.Entry[K, V]] {
