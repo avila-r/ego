@@ -3542,21 +3542,21 @@ type Result[T any] struct {
         err   error
 }
 
-func Of[T any](v T, e error) Result[T] <span class="cov4" title="6">{
+func Of[T any](v T, e error) Result[T] <span class="cov4" title="9">{
         return Result[T]{
                 value: &amp;v,
                 err:   e,
         }
 }</span>
 
-func Ok[T any](value T) Result[T] <span class="cov7" title="31">{
+func Ok[T any](value T) Result[T] <span class="cov8" title="174">{
         return Result[T]{
                 value: &amp;value,
                 err:   nil,
         }
 }</span>
 
-func Error[T any](err error) Result[T] <span class="cov6" title="20">{
+func Error[T any](err error) Result[T] <span class="cov7" title="90">{
         return Result[T]{
                 value: nil,
                 err:   err,
@@ -3567,49 +3567,49 @@ func Failure[T any](err error) Result[T] <span class="cov1" title="1">{
         return Error[T](err)
 }</span>
 
-func (r *Result[T]) Value() *T <span class="cov6" title="14">{
+func (r *Result[T]) Value() *T <span class="cov5" title="14">{
         return r.value
 }</span>
 
-func (r *Result[T]) Error() error <span class="cov10" title="97">{
-        if r.err == nil &amp;&amp; r.IsEmpty() </span><span class="cov5" title="8">{
+func (r *Result[T]) Error() error <span class="cov10" title="352">{
+        if r.err == nil &amp;&amp; r.IsEmpty() </span><span class="cov4" title="12">{
                 return ErrEmptyResult
         }</span>
-        <span class="cov9" title="89">return r.err</span>
+        <span class="cov9" title="340">return r.err</span>
 }
 
-func (r *Result[T]) Success(t T) Result[T] <span class="cov5" title="8">{
+func (r *Result[T]) Success(t T) Result[T] <span class="cov4" title="8">{
         r.value, r.err = &amp;t, nil
         return *r
 }</span>
 
-func (r *Result[T]) Ok(t T) Result[T] <span class="cov3" title="3">{
+func (r *Result[T]) Ok(t T) Result[T] <span class="cov2" title="3">{
         r.value, r.err = &amp;t, nil
         return *r
 }</span>
 
-func (r *Result[T]) Failure(err error) Result[T] <span class="cov4" title="6">{
+func (r *Result[T]) Failure(err error) Result[T] <span class="cov3" title="6">{
         r.err, r.value = err, nil
         return *r
 }</span>
 
-func (r *Result[T]) IsEmpty() bool <span class="cov9" title="63">{
+func (r *Result[T]) IsEmpty() bool <span class="cov9" title="223">{
         return r.value == nil
 }</span>
 
-func (r *Result[T]) IsSuccess() bool <span class="cov8" title="39">{
+func (r *Result[T]) IsSuccess() bool <span class="cov8" title="128">{
         return r.Error() == nil &amp;&amp; r.value != nil
 }</span>
 
-func (r *Result[T]) IsError() bool <span class="cov7" title="35">{
+func (r *Result[T]) IsError() bool <span class="cov9" title="184">{
         return r.Error() != nil || r.value == nil
 }</span>
 
-func (r *Result[T]) Unwrap() T <span class="cov6" title="20">{
+func (r *Result[T]) Unwrap() T <span class="cov7" title="77">{
         return *r.value
 }</span>
 
-func (o *Result[T]) Take() (*T, *failure.Error) <span class="cov3" title="3">{
+func (o *Result[T]) Take() (*T, *failure.Error) <span class="cov2" title="3">{
         if o.IsEmpty() </span><span class="cov2" title="2">{
                 println("taking from empty result")
                 return nil, ErrNoneValueTaken
@@ -3626,18 +3626,399 @@ func (r *Result[T]) Join() T <span class="cov3" title="4">{
 
 func (r *Result[T]) Expect(message ...string) T <span class="cov3" title="4">{
         var msg string
-        if len(message) &gt; 0 </span><span class="cov3" title="3">{
+        if len(message) &gt; 0 </span><span class="cov2" title="3">{
                 msg = message[0]
         }</span> else<span class="cov1" title="1"> {
                 msg = r.Error().Error()
         }</span>
 
-        <span class="cov3" title="4">if r.IsError() </span><span class="cov3" title="3">{
+        <span class="cov3" title="4">if r.IsError() </span><span class="cov2" title="3">{
                 panic(msg)</span>
         }
 
         <span class="cov1" title="1">return *r.value</span>
 }
+
+// Map applies a function to the value if Ok, otherwise returns the error
+func (r Result[T]) Map(f func(T) T) Result[T] <span class="cov4" title="8">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return r
+        }</span>
+        <span class="cov3" title="7">return Ok(f(*r.value))</span>
+}
+
+// MapOr applies a function to the value if Ok, otherwise returns the default value
+func (r Result[T]) MapOr(defaultValue T, f func(T) T) T <span class="cov2" title="2">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return defaultValue
+        }</span>
+        <span class="cov1" title="1">return f(*r.value)</span>
+}
+
+// MapOrElse applies a function to the value if Ok, otherwise calls the fallback function
+func (r *Result[T]) MapOrElse(fallback func(error) T, f func(T) T) T <span class="cov2" title="2">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return fallback(r.err)
+        }</span>
+        <span class="cov1" title="1">return f(*r.value)</span>
+}
+
+// FlatMap applies a function that returns a Result and flattens it
+func (r Result[T]) FlatMap(f func(T) Result[T]) Result[T] <span class="cov4" title="12">{
+        if r.IsError() </span><span class="cov2" title="2">{
+                return r
+        }</span>
+        <span class="cov4" title="10">return f(*r.value)</span>
+}
+
+// AndThen chains operations that return Results (alias for FlatMap)
+func (r Result[T]) AndThen(f func(T) Result[T]) Result[T] <span class="cov3" title="5">{
+        return r.FlatMap(f)
+}</span>
+
+// Bind is another alias for FlatMap, common in functional programming
+func (r Result[T]) Bind(f func(T) Result[T]) Result[T] <span class="cov1" title="1">{
+        return r.FlatMap(f)
+}</span>
+
+// OnSuccess executes a side-effect function if the result is Ok
+func (r Result[T]) OnSuccess(f func(T)) Result[T] <span class="cov3" title="5">{
+        if r.IsSuccess() </span><span class="cov3" title="4">{
+                f(*r.value)
+        }</span>
+        <span class="cov3" title="5">return r</span>
+}
+
+// OnFailure executes a side-effect function if the result is Error
+func (r Result[T]) OnFailure(f func(error)) Result[T] <span class="cov3" title="4">{
+        if r.IsError() </span><span class="cov2" title="3">{
+                f(r.err)
+        }</span>
+        <span class="cov3" title="4">return r</span>
+}
+
+// Inspect allows inspecting the value without consuming it (side-effect)
+func (r Result[T]) Inspect(f func(T)) Result[T] <span class="cov1" title="1">{
+        return r.OnSuccess(f)
+}</span>
+
+// InspectErr allows inspecting the error without consuming it
+func (r Result[T]) InspectErr(f func(error)) Result[T] <span class="cov1" title="1">{
+        return r.OnFailure(f)
+}</span>
+
+// Or returns this result if Ok, otherwise returns the other result
+func (r Result[T]) Or(other Result[T]) Result[T] <span class="cov2" title="3">{
+        if r.IsSuccess() </span><span class="cov1" title="1">{
+                return r
+        }</span>
+        <span class="cov2" title="2">return other</span>
+}
+
+// OrElse returns this result if Ok, otherwise calls the function
+func (r Result[T]) OrElse(f func(error) Result[T]) Result[T] <span class="cov2" title="2">{
+        if r.IsSuccess() </span><span class="cov1" title="1">{
+                return r
+        }</span>
+        <span class="cov1" title="1">return f(r.err)</span>
+}
+
+// And returns other if this is Ok, otherwise returns this error
+func (r *Result[T]) And(other Result[T]) Result[T] <span class="cov2" title="2">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return *r
+        }</span>
+        <span class="cov1" title="1">return other</span>
+}
+
+// UnwrapOr returns the value if Ok, otherwise returns the default value
+func (r *Result[T]) UnwrapOr(defaultValue T) T <span class="cov3" title="4">{
+        if r.IsError() </span><span class="cov2" title="2">{
+                return defaultValue
+        }</span>
+        <span class="cov2" title="2">return *r.value</span>
+}
+
+// UnwrapOrElse returns the value if Ok, otherwise calls the function
+func (r Result[T]) UnwrapOrElse(f func(error) T) T <span class="cov2" title="2">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return f(r.err)
+        }</span>
+        <span class="cov1" title="1">return *r.value</span>
+}
+
+// UnwrapOrDefault returns the value if Ok, otherwise returns the zero value
+func (r *Result[T]) UnwrapOrDefault() T <span class="cov2" title="2">{
+        var zero T
+        return r.UnwrapOr(zero)
+}</span>
+
+// Contains checks if the result contains the given value
+func (r *Result[T]) Contains(value T, equals func(T, T) bool) bool <span class="cov2" title="3">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return false
+        }</span>
+        <span class="cov2" title="2">return equals(*r.value, value)</span>
+}
+
+// ContainsErr checks if the result contains an error matching the predicate
+func (r *Result[T]) ContainsErr(predicate func(error) bool) bool <span class="cov2" title="2">{
+        if r.IsSuccess() </span><span class="cov1" title="1">{
+                return false
+        }</span>
+        <span class="cov1" title="1">return predicate(r.err)</span>
+}
+
+// Match performs pattern matching on the result
+func (r Result[T]) Match(onSuccess func(T), onFailure func(error)) <span class="cov2" title="2">{
+        if r.IsSuccess() </span><span class="cov1" title="1">{
+                onSuccess(*r.value)
+        }</span> else<span class="cov1" title="1"> {
+                onFailure(r.err)
+        }</span>
+}
+
+// MatchReturn performs pattern matching and returns a value
+func MatchReturn[T any, U any](r Result[T], onSuccess func(T) U, onFailure func(error) U) U <span class="cov2" title="2">{
+        if r.IsSuccess() </span><span class="cov1" title="1">{
+                return onSuccess(*r.value)
+        }</span>
+        <span class="cov1" title="1">return onFailure(r.err)</span>
+}
+
+// Filter keeps the value only if the predicate is true, otherwise returns error
+func (r Result[T]) Filter(predicate func(T) bool, err error) Result[T] <span class="cov3" title="5">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return r
+        }</span>
+        <span class="cov3" title="4">if predicate(*r.value) </span><span class="cov2" title="3">{
+                return r
+        }</span>
+        <span class="cov1" title="1">return Error[T](err)</span>
+}
+
+// Recover attempts to recover from an error using the provided function
+func (r Result[T]) Recover(f func(error) T) Result[T] <span class="cov2" title="2">{
+        if r.IsSuccess() </span><span class="cov1" title="1">{
+                return r
+        }</span>
+        <span class="cov1" title="1">return Ok(f(r.err))</span>
+}
+
+// RecoverWith attempts to recover from an error with a Result
+func (r Result[T]) RecoverWith(f func(error) Result[T]) Result[T] <span class="cov2" title="3">{
+        if r.IsSuccess() </span><span class="cov1" title="1">{
+                return r
+        }</span>
+        <span class="cov2" title="2">return f(r.err)</span>
+}
+
+// Flatten flattens a Result[Result[T]] into Result[T]
+func Flatten[T any](r Result[Result[T]]) Result[T] <span class="cov2" title="3">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return Error[T](r.err)
+        }</span>
+        <span class="cov2" title="2">return *r.value</span>
+}
+
+// Transpose converts Result[*T] to *Result[T] style handling
+func (r *Result[T]) Transpose() (*T, error) <span class="cov3" title="4">{
+        if r.IsError() </span><span class="cov2" title="2">{
+                return nil, r.err
+        }</span>
+        <span class="cov2" title="2">return r.value, nil</span>
+}
+
+// Try executes a function and captures panics as errors
+func Try[T any](f func() T) Result[T] <span class="cov2" title="3">{
+        var result Result[T]
+        defer func() </span><span class="cov2" title="3">{
+                if r := recover(); r != nil </span><span class="cov2" title="2">{
+                        if err, ok := r.(error); ok </span><span class="cov1" title="1">{
+                                result = Error[T](err)
+                        }</span> else<span class="cov1" title="1"> {
+                                result = Error[T](failure.New("panic occurred"))
+                        }</span>
+                }
+        }()
+        <span class="cov2" title="3">result = Ok(f())
+        return result</span>
+}
+
+// TryWith executes a fallible function and wraps it in a Result
+func TryWith[T any](f func() (T, error)) Result[T] <span class="cov2" title="3">{
+        v, err := f()
+        return Of(v, err)
+}</span>
+
+// Tap executes a function for side effects and returns the original result
+func (r Result[T]) Tap(f func(Result[T])) Result[T] <span class="cov1" title="1">{
+        f(r)
+        return r
+}</span>
+
+// ToPointer converts Result[T] to traditional Go (*T, error) pattern
+func (r *Result[T]) ToPointer() (*T, error) <span class="cov2" title="2">{
+        return r.Transpose()
+}</span>
+
+// FromPointer creates a Result from traditional Go (*T, error) pattern
+func FromPointer[T any](value *T, err error) Result[T] <span class="cov2" title="3">{
+        if err != nil </span><span class="cov1" title="1">{
+                return Error[T](err)
+        }</span>
+        <span class="cov2" title="2">if value == nil </span><span class="cov1" title="1">{
+                return Error[T](ErrEmptyResult)
+        }</span>
+        <span class="cov1" title="1">return Ok(*value)</span>
+}
+
+// Chain allows chaining multiple Result operations
+func Chain[T any](initial Result[T], operations ...func(Result[T]) Result[T]) Result[T] <span class="cov2" title="2">{
+        result := initial
+        for _, op := range operations </span><span class="cov2" title="3">{
+                result = op(result)
+                if result.IsError() </span><span class="cov1" title="1">{
+                        return result
+                }</span>
+        }
+        <span class="cov1" title="1">return result</span>
+}
+
+// Combine combines two Results into a Result of a tuple-like struct
+func Combine[T any, U any](r1 Result[T], r2 Result[U]) Result[struct {
+        First  T
+        Second U
+}] <span class="cov2" title="3">{
+        if r1.IsError() </span><span class="cov1" title="1">{
+                return Error[struct {
+                        First  T
+                        Second U
+                }](r1.err)
+        }</span>
+        <span class="cov2" title="2">if r2.IsError() </span><span class="cov1" title="1">{
+                return Error[struct {
+                        First  T
+                        Second U
+                }](r2.err)
+        }</span>
+        <span class="cov1" title="1">return Ok(struct {
+                First  T
+                Second U
+        }{
+                First:  *r1.value,
+                Second: *r2.value,
+        })</span>
+}
+
+// MapErr transforms the error if present
+func (r Result[T]) MapErr(f func(error) error) Result[T] <span class="cov2" title="2">{
+        if r.IsSuccess() </span><span class="cov1" title="1">{
+                return r
+        }</span>
+        <span class="cov1" title="1">return Error[T](f(r.err))</span>
+}
+
+// OkOr returns the value if Ok, otherwise returns error as Result
+func (r Result[T]) OkOr(err error) Result[T] <span class="cov4" title="9">{
+        if r.IsSuccess() </span><span class="cov2" title="3">{
+                return r
+        }</span>
+        <span class="cov3" title="6">return Error[T](err)</span>
+}
+
+// ExpectErr panics with a message if the result is Ok (useful for testing)
+func (r *Result[T]) ExpectErr(message string) error <span class="cov2" title="2">{
+        if r.IsSuccess() </span><span class="cov1" title="1">{
+                panic(message)</span>
+        }
+        <span class="cov1" title="1">return r.err</span>
+}
+
+// UnwrapErr returns the error, panics if Ok
+func (r *Result[T]) UnwrapErr() error <span class="cov2" title="2">{
+        if r.IsSuccess() </span><span class="cov1" title="1">{
+                panic("called UnwrapErr on an Ok value")</span>
+        }
+        <span class="cov1" title="1">return r.err</span>
+}
+
+// Iter returns a slice with the value if Ok, empty slice if Error
+func (r *Result[T]) Iter() []T <span class="cov2" title="2">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return []T{}
+        }</span>
+        <span class="cov1" title="1">return []T{*r.value}</span>
+}
+
+// Collect gathers multiple Results into a single Result of a slice
+func Collect[T any](results []Result[T]) Result[[]T] <span class="cov2" title="2">{
+        var values []T
+        for _, r := range results </span><span class="cov3" title="5">{
+                if r.IsError() </span><span class="cov1" title="1">{
+                        return Error[[]T](r.err)
+                }</span>
+                <span class="cov3" title="4">values = append(values, *r.value)</span>
+        }
+        <span class="cov1" title="1">return Ok(values)</span>
+}
+
+// Partition separates a slice of Results into successes and failures
+func Partition[T any](results []Result[T]) (successes []T, failures []error) <span class="cov1" title="1">{
+        for _, r := range results </span><span class="cov3" title="5">{
+                if r.IsSuccess() </span><span class="cov2" title="3">{
+                        successes = append(successes, *r.value)
+                }</span> else<span class="cov2" title="2"> {
+                        failures = append(failures, r.err)
+                }</span>
+        }
+        <span class="cov1" title="1">return successes, failures</span>
+}
+</pre>
+		
+		<pre class="file" id="file24" style="display: none">package result
+
+// Map applies a function to transform the value from T to R if Ok, otherwise returns the error
+func Map[T, R any](r Result[T], f func(T) R) Result[R] <span class="cov6" title="8">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return Error[R](r.err)
+        }</span>
+        <span class="cov6" title="7">return Ok(f(*r.value))</span>
+}
+
+// MapOr applies a function to the value if Ok, otherwise returns the default value
+func MapOr[T, R any](r Result[T], defaultValue R, f func(T) R) R <span class="cov6" title="6">{
+        if r.IsError() </span><span class="cov2" title="2">{
+                return defaultValue
+        }</span>
+        <span class="cov4" title="4">return f(*r.value)</span>
+}
+
+// MapOrElse applies a function to the value if Ok, otherwise calls the fallback function
+func MapOrElse[T, R any](r Result[T], fallback func(error) R, f func(T) R) R <span class="cov6" title="6">{
+        if r.IsError() </span><span class="cov4" title="3">{
+                return fallback(r.err)
+        }</span>
+        <span class="cov4" title="3">return f(*r.value)</span>
+}
+
+// FlatMap applies a function that returns a Result and flattens it
+func FlatMap[T, R any](r Result[T], f func(T) Result[R]) Result[R] <span class="cov10" title="25">{
+        if r.IsError() </span><span class="cov1" title="1">{
+                return Error[R](r.err)
+        }</span>
+        <span class="cov9" title="24">return f(*r.value)</span>
+}
+
+// AndThen chains operations that return Results (alias for FlatMap)
+func AndThen[T, R any](r Result[T], f func(T) Result[R]) Result[R] <span class="cov4" title="3">{
+        return FlatMap(r, f)
+}</span>
+
+// Bind is another alias for FlatMap, common in functional programming
+func Bind[T, R any](r Result[T], f func(T) Result[R]) Result[R] <span class="cov4" title="3">{
+        return FlatMap(r, f)
+}</span>
 </pre>
 		
 		<pre class="file" id="file40" style="display: none">package slice
