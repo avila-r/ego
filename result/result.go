@@ -213,7 +213,7 @@ func (r Result[T]) UnwrapOrElse(f func(error) T) T {
 }
 
 // UnwrapOrDefault returns the value if Ok, otherwise returns the zero value
-func (r *Result[T]) UnwrapOrDefault() T {
+func (r Result[T]) UnwrapOrDefault() T {
 	var zero T
 	return r.UnwrapOr(zero)
 }
