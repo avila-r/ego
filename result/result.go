@@ -121,7 +121,7 @@ func (r Result[T]) MapOr(defaultValue T, f func(T) T) T {
 }
 
 // MapOrElse applies a function to the value if Ok, otherwise calls the fallback function
-func (r *Result[T]) MapOrElse(fallback func(error) T, f func(T) T) T {
+func (r Result[T]) MapOrElse(fallback func(error) T, f func(T) T) T {
 	if r.IsError() {
 		return fallback(r.err)
 	}
