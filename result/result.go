@@ -227,7 +227,7 @@ func (r Result[T]) Contains(value T, equals func(T, T) bool) bool {
 }
 
 // ContainsErr checks if the result contains an error matching the predicate
-func (r *Result[T]) ContainsErr(predicate func(error) bool) bool {
+func (r Result[T]) ContainsErr(predicate func(error) bool) bool {
 	if r.IsSuccess() {
 		return false
 	}
