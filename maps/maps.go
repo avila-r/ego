@@ -34,6 +34,7 @@ func DeleteIf[M ~map[K]V, K comparable, V any](m M, predicate func(K, V) bool) {
 	std.DeleteFunc(m, predicate)
 }
 
+// Entries returns a Collection containing all key/value pairs from the map as Entry objects.
 func Entries[M ~map[K]V, K comparable, V any](m M) collection.Collection[collection.Entry[K, V]] {
 	c := collection.Sized[collection.Entry[K, V]](len(m))
 	for k, v := range m {
@@ -42,6 +43,7 @@ func Entries[M ~map[K]V, K comparable, V any](m M) collection.Collection[collect
 	return c
 }
 
+// Keys returns a Collection containing all keys from the map.
 func Keys[M ~map[K]V, K comparable, V any](m M) collection.Collection[K] {
 	c := collection.Sized[K](len(m))
 	for k := range m {
@@ -59,6 +61,7 @@ func Values[M ~map[K]V, K comparable, V any](m M) collection.Collection[V] {
 	return c
 }
 
+// Iter returns an Iterator over the map's key/value pairs as Entry objects.
 func Iter[M ~map[K]V, K comparable, V any](m M) iterator.Iterator[collection.Entry[K, V]] {
 	return Entries(m).Iterator()
 }
