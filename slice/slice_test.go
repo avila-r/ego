@@ -711,3 +711,47 @@ func Test_SortedBy(t *testing.T) {
 		})
 	}
 }
+
+func Test_NewAndSized(t *testing.T) {
+	type Case struct {
+		name         string
+		fn           func() []int
+		wantLen      int
+		wantCapacity int
+	}
+
+	cases := []Case{
+		{
+			name: "New without size returns empty slice with zero capacity",
+			fn: func() []int {
+				return slice.New[int]()
+			},
+			wantLen:      0,
+			wantCapacity: 0,
+		},
+		{
+			name: "New with size uses make and sets capacity",
+			fn: func() []int {
+				return slice.New[int](10)
+			},
+			wantLen:      0,
+			wantCapacity: 10,
+		},
+		{
+			name: "Sized calls New with size",
+			fn: func() []int {
+				return slice.Sized[int](5)
+			},
+			wantLen:      0,
+			wantCapacity: 5,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			got := c.fn()
+			assert.Equal(t, c.wantLen, len(got))
+			assert.Equal(t, c.wantCapacity, cap(got))
+		})
+	}
+}
