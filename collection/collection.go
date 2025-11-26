@@ -1,5 +1,10 @@
 package collection
 
+import (
+	"github.com/avila-r/ego/iterator"
+	"github.com/avila-r/ego/slice"
+)
+
 type Collection[T any] interface {
 	Add(elements ...T)
 	Get(index int) (T, bool)
@@ -7,9 +12,10 @@ type Collection[T any] interface {
 	Size() int
 	IsEmpty() bool
 	Clear()
-	ForEach(action func(T))
 	Clone() Collection[T]
 	Elements() []T
+
+	iterator.Iterable[T]
 }
 
 // DefaultCollection is a simple slice-backed implementation of Collection
@@ -20,8 +26,8 @@ type DefaultCollection[T any] struct {
 // Ensure DefaultCollection implements Collection
 var _ Collection[int] = (*DefaultCollection[int])(nil)
 
-// New creates a new collection with the provided elements
-func New[T any](items ...T) *DefaultCollection[T] {
+// Of creates a new collection with the provided elements
+func Of[T any](items ...T) *DefaultCollection[T] {
 	return &DefaultCollection[T]{
 		elements: items,
 	}
@@ -74,7 +80,7 @@ func (c *DefaultCollection[T]) Clear() {
 
 // Elements returns a slice of all elements (implements stream.Collectable)
 func (c *DefaultCollection[T]) Elements() []T {
-	return c.elements
+	return slice.Clone(c.elements)
 }
 
 // ForEach applies the given action to each element
@@ -91,4 +97,9 @@ func (c *DefaultCollection[T]) Clone() Collection[T] {
 	return &DefaultCollection[T]{
 		elements: cloned,
 	}
+}
+
+// Iterator returns an iterator over the elements in the collection
+func (c *DefaultCollection[T]) Iterator() iterator.Iterator[T] {
+	return iterator.Of(c.elements...)
 }

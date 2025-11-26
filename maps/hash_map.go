@@ -113,11 +113,11 @@ func (m *HashMap[K, V]) ValueSlice() []V {
 }
 
 func (m *HashMap[K, V]) Keys() collection.Collection[K] {
-	return collection.New(m.KeySlice()...)
+	return collection.Of(m.KeySlice()...)
 }
 
 func (m *HashMap[K, V]) Values() collection.Collection[V] {
-	return collection.New(m.ValueSlice()...)
+	return collection.Of(m.ValueSlice()...)
 }
 
 func (m *HashMap[K, V]) Elements() map[K]V {
@@ -125,7 +125,7 @@ func (m *HashMap[K, V]) Elements() map[K]V {
 }
 
 func (m *HashMap[K, V]) Entries() collection.Collection[collection.Entry[K, V]] {
-	return collection.New(m.ToSlice()...)
+	return collection.Of(m.ToSlice()...)
 }
 
 func (m *HashMap[K, V]) Iterator() iterator.Iterator[collection.Entry[K, V]] {
