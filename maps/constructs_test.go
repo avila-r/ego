@@ -107,7 +107,7 @@ func Test_OfLinked(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			m := maps.OfLinked(c.entries...)
+			m := maps.LinkedOf(c.entries...)
 			assert.Equal(t, len(c.expected), m.Len())
 			assert.Equal(t, c.expected, m.ToSlice())
 		})
@@ -129,7 +129,7 @@ func Test_Of_CanUseMap(t *testing.T) {
 }
 
 func Test_OfLinked_CanUseMap(t *testing.T) {
-	m := maps.OfLinked(
+	m := maps.LinkedOf(
 		collection.Entry[string, int]{Key: "key1", Value: 100},
 		collection.Entry[string, int]{Key: "key2", Value: 200},
 	)
