@@ -1,6 +1,7 @@
 package maps_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -229,4 +230,46 @@ func TestLinkedOf(t *testing.T) {
 		},
 		m.ToSlice(),
 	)
+}
+
+func TestOrder(t *testing.T) {
+	type Case struct {
+		name       string
+		input      map[string]int
+		comparator func(a, b collection.Entry[string, int]) int
+		expected   []collection.Entry[string, int]
+	}
+
+	cases := []Case{
+		{
+			"order by value ascending",
+			map[string]int{"a": 2, "b": 1},
+			func(a, b collection.Entry[string, int]) int {
+				return a.Value - b.Value
+			},
+			[]collection.Entry[string, int]{
+				{Key: "b", Value: 1},
+				{Key: "a", Value: 2},
+			},
+		},
+		{
+			"order by key descending",
+			map[string]int{"a": 1, "b": 2},
+			func(a, b collection.Entry[string, int]) int {
+				return -1 * (strings.Compare(a.Key, b.Key))
+			},
+			[]collection.Entry[string, int]{
+				{Key: "b", Value: 2},
+				{Key: "a", Value: 1},
+			},
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			m := maps.Order(c.input, c.comparator)
+
+			assert.Equal(t, c.expected, m.ToSlice())
+		})
+	}
 }
