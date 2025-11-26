@@ -157,8 +157,10 @@ func (s Stream[T]) ForEachOrdered(consumer function.Consumer[T]) {
 	s.Sort().ForEach(consumer)
 }
 
-func (s Stream[T]) toSlice() []T {
-	return s.elements
+func (s Stream[T]) ToSlice() []T {
+	target := make([]T, len(s.elements))
+	copy(target, s.elements)
+	return target
 }
 func (s Stream[T]) ReduceWithIdentity(identity T, accumulator function.BinaryOperator[T]) T {
 	result := identity
