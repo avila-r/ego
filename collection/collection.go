@@ -40,6 +40,13 @@ func Empty[T any]() *DefaultCollection[T] {
 	}
 }
 
+// Sized creates a new empty collection with the specified initial capacity
+func Sized[T any](size int) *DefaultCollection[T] {
+	return &DefaultCollection[T]{
+		elements: make([]T, 0, size),
+	}
+}
+
 // Add appends elements to the collection
 func (c *DefaultCollection[T]) Add(elements ...T) {
 	c.elements = append(c.elements, elements...)
