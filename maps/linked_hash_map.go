@@ -190,11 +190,11 @@ func (m *LinkedHashMap[K, V]) ValueSlice() []V {
 }
 
 func (m *LinkedHashMap[K, V]) Keys() collection.Collection[K] {
-	return collection.New(m.KeySlice()...)
+	return collection.Of(m.KeySlice()...)
 }
 
 func (m *LinkedHashMap[K, V]) Values() collection.Collection[V] {
-	return collection.New(m.ValueSlice()...)
+	return collection.Of(m.ValueSlice()...)
 }
 
 func (m *LinkedHashMap[K, V]) Elements() map[K]V {
@@ -208,7 +208,7 @@ func (m *LinkedHashMap[K, V]) Elements() map[K]V {
 }
 
 func (m *LinkedHashMap[K, V]) Entries() collection.Collection[collection.Entry[K, V]] {
-	return collection.New(m.ToSlice()...)
+	return collection.Of(m.ToSlice()...)
 }
 
 func (m *LinkedHashMap[K, V]) Iterator() iterator.Iterator[collection.Entry[K, V]] {
