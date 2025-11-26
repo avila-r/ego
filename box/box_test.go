@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/avila-r/ego/box"
+	"github.com/avila-r/ego/pointer"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -468,22 +469,26 @@ func Test_String(t *testing.T) {
 func Test_Equals(t *testing.T) {
 	type Case struct {
 		name     string
-		box1     box.Box[int]
-		box2     box.Box[int]
+		box1     *box.Box[int]
+		box2     *box.Box[int]
 		expected bool
 	}
 
+	r := pointer.Of(box.Of(42))
+
 	cases := []Case{
-		{"same instance", box.Of(42), box.Of(42), true},
-		{"different present boxes", box.Of(42), box.Of(10), false},
-		{"both empty boxes", box.Empty[int](), box.Empty[int](), true},
-		{"present and empty box", box.Of(42), box.Empty[int](), false},
-		{"empty and present box", box.Empty[int](), box.Of(42), false},
+		{"same instance", r, r, true},
+		{"different present boxes", pointer.Of(box.Of(42)), pointer.Of(box.Of(10)), false},
+		{"both empty boxes", pointer.Of(box.Empty[int]()), pointer.Of(box.Empty[int]()), true},
+		{"present and empty box", pointer.Of(box.Of(42)), pointer.Of(box.Empty[int]()), false},
+		{"empty and present box", pointer.Of(box.Empty[int]()), pointer.Of(box.Of(42)), false},
+		{"present and nil box", pointer.Of(box.Of(42)), nil, false},
+		{"empty and nil box", pointer.Of(box.Empty[int]()), nil, false},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			result := c.box1.Equals(&c.box2)
+			result := c.box1.Equals(c.box2)
 			assert.Equal(t, c.expected, result)
 		})
 	}
@@ -930,7 +935,7 @@ func Test_Box_Complex_Workflow(t *testing.T) {
 	// Complex workflow: start with 10, double it, clamp to 15, square, modulo 100
 	b := box.Of(10)
 	result := b.
-		Then(func(v int) int { return box.Twice(v) }).      // 20
+		Then(func(v int) int { return box.Twice(v) }).        // 20
 		Then(func(v int) int { return box.Clamp(0, 15)(v) }). // 15
 		Then(func(v int) int { return box.Square(v) }).       // 225
 		Then(func(v int) int { return box.Modulo(100)(v) })   // 25

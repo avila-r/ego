@@ -141,10 +141,6 @@ func (b Box[T]) String() string {
 
 // Equals checks if two Boxes are equal
 func (b Box[T]) Equals(other *Box[T]) bool {
-	if &b == other {
-		return true
-	}
-
 	if other == nil {
 		return false
 	}
@@ -154,6 +150,10 @@ func (b Box[T]) Equals(other *Box[T]) bool {
 	}
 
 	if !b.present {
+		return true
+	}
+
+	if b == *other {
 		return true
 	}
 
