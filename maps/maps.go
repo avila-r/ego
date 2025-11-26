@@ -86,13 +86,6 @@ func Of[K comparable, V any](entries ...collection.Entry[K, V]) collection.Map[K
 	return m
 }
 
-func LinkedFrom[K comparable, V any](m Map[K, V]) collection.Map[K, V] {
-	base := NewLinked[K, V]()
-	for k, v := range m {
-		base.Put(k, v)
-	}
-	return base
-}
 
 func NewLinked[K comparable, V any]() collection.Map[K, V] {
 	return EmptyLinkedHashMap[K, V]()

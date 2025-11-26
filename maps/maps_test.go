@@ -216,21 +216,6 @@ func TestNewEmpty(t *testing.T) {
 	assert.Equal(t, 0, m2.Len())
 }
 
-func TestLinkedFrom(t *testing.T) {
-	m := maps.LinkedFrom(map[string]int{
-		"a": 1,
-		"b": 2,
-	})
-
-	assert.Equal(t,
-		[]collection.Entry[string, int]{
-			{Key: "a", Value: 1},
-			{Key: "b", Value: 2},
-		},
-		m.ToSlice(),
-	)
-}
-
 func TestLinkedOf(t *testing.T) {
 	m := maps.LinkedOf(
 		collection.Entry[string, int]{Key: "a", Value: 1},
