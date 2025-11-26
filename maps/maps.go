@@ -52,7 +52,7 @@ func Keys[M ~map[K]V, K comparable, V any](m M) collection.Collection[K] {
 
 // Values returns a Collection containing all values from the map.
 func Values[M ~map[K]V, K comparable, V any](m M) collection.Collection[V] {
-	c := collection.Empty[V]()
+	c := collection.Sized[V](len(m))
 	for _, v := range m {
 		c.Add(v)
 	}
