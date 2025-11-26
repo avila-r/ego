@@ -593,3 +593,121 @@ func Test_Edge_Cases(t *testing.T) {
 		assert.Equal(t, 0, slice.Size(nilSlice))
 	})
 }
+
+func Test_Sort(t *testing.T) {
+	type Case struct {
+		name     string
+		initial  []int
+		expected []int
+	}
+
+	cases := []Case{
+		{"sort ascending", []int{4, 1, 3, 2}, []int{1, 2, 3, 4}},
+		{"already sorted", []int{1, 2, 3}, []int{1, 2, 3}},
+		{"reverse sorted", []int{5, 4, 3}, []int{3, 4, 5}},
+		{"empty slice", []int{}, []int{}},
+		{"single element", []int{9}, []int{9}},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			s := slice.Clone(c.initial) // Just to avoid modifying table data
+			slice.Sort(s)
+			assert.Equal(t, c.expected, s)
+		})
+	}
+}
+
+func Test_Sorted(t *testing.T) {
+	type Case struct {
+		name     string
+		initial  []int
+		expected []int
+	}
+
+	cases := []Case{
+		{"sorted copy", []int{4, 1, 3, 2}, []int{1, 2, 3, 4}},
+		{"already sorted", []int{1, 2, 3}, []int{1, 2, 3}},
+		{"reverse sorted", []int{5, 4, 3}, []int{3, 4, 5}},
+		{"empty slice", []int{}, []int{}},
+		{"single element", []int{9}, []int{9}},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			original := slice.Clone(c.initial)
+			result := slice.Sorted(original)
+
+			assert.Equal(t, c.expected, result)
+			assert.Equal(t, c.initial, original, "Sorted must not modify original slice")
+		})
+	}
+}
+func Test_SortBy(t *testing.T) {
+	type Case struct {
+		name     string
+		initial  []string
+		expected []string
+	}
+
+	byLength := func(a, b string) int {
+		switch {
+		case len(a) < len(b):
+			return -1
+		case len(a) > len(b):
+			return 1
+		default:
+			return 0
+		}
+	}
+
+	cases := []Case{
+		{"sort by length", []string{"aaa", "b", "cc"}, []string{"b", "cc", "aaa"}},
+		{"all equal length", []string{"a", "b", "c"}, []string{"a", "b", "c"}},
+		{"empty slice", []string{}, []string{}},
+		{"single element", []string{"a"}, []string{"a"}},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			s := slice.Clone(c.initial)
+			slice.SortBy(s, byLength)
+			assert.Equal(t, c.expected, s)
+		})
+	}
+}
+func Test_SortedBy(t *testing.T) {
+	type Case struct {
+		name     string
+		initial  []string
+		expected []string
+	}
+
+	byLength := func(a, b string) int {
+		switch {
+		case len(a) < len(b):
+			return -1
+		case len(a) > len(b):
+			return 1
+		default:
+			return 0
+		}
+	}
+
+	cases := []Case{
+		{"sorted copy by length", []string{"aaa", "b", "cc"}, []string{"b", "cc", "aaa"}},
+		{"equal length", []string{"a", "b", "c"}, []string{"a", "b", "c"}},
+		{"empty slice", []string{}, []string{}},
+		{"single element", []string{"a"}, []string{"a"}},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			original := slice.Clone(c.initial)
+			result := slice.SortedBy(original, byLength)
+
+			assert.Equal(t, c.expected, result)
+			assert.Equal(t, c.initial, original, "SortedBy must not modify original slice")
+		})
+	}
+}

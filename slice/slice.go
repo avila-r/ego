@@ -3,6 +3,7 @@ package slice
 import (
 	"slices"
 
+	"github.com/avila-r/ego/constraint"
 	"github.com/avila-r/ego/optional"
 	"github.com/avila-r/ego/stream"
 )
@@ -11,12 +12,20 @@ func Of[T any](values ...T) []T {
 	return values
 }
 
-func New[T any]() []T {
+func New[T any](size ...int) []T {
+	if len(size) > 0 {
+		return make([]T, 0, size[0])
+	}
+
 	return []T{}
 }
 
-func Empty[T any]() []T {
-	return New[T]()
+func Empty[T any](size ...int) []T {
+	return New[T](size...)
+}
+
+func Sized[T any](size int) []T {
+	return New[T](size)
 }
 
 func Append[T any](at []T, t ...T) []T {
@@ -128,6 +137,26 @@ func Unique[T comparable](s []T) []T {
 		}
 	}
 	return result
+}
+
+func Sort[S ~[]T, T constraint.Comparable](s S) {
+	slices.Sort(s)
+}
+
+func Sorted[S ~[]T, T constraint.Comparable](s S) S {
+	base := Clone(s)
+	slices.Sort(base)
+	return base
+}
+
+func SortBy[S ~[]E, E any](s S, function func(a, b E) int) {
+	slices.SortFunc(s, function)
+}
+
+func SortedBy[S ~[]E, E any](s S, function func(a, b E) int) S {
+	base := Clone(s)
+	SortBy(base, function)
+	return base
 }
 
 func Clear[T any](s *[]T) {
