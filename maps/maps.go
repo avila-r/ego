@@ -61,6 +61,7 @@ func Values[M ~map[K]V, K comparable, V any](m M) collection.Collection[V] {
 	return c
 }
 
+// Iter returns an Iterator over the map's key/value pairs as Entry objects.
 func Iter[M ~map[K]V, K comparable, V any](m M) iterator.Iterator[collection.Entry[K, V]] {
 	return Entries(m).Iterator()
 }
