@@ -35,7 +35,7 @@ func DeleteIf[M ~map[K]V, K comparable, V any](m M, predicate func(K, V) bool) {
 }
 
 func Entries[M ~map[K]V, K comparable, V any](m M) collection.Collection[collection.Entry[K, V]] {
-	c := collection.Empty[collection.Entry[K, V]]()
+	c := collection.Sized[collection.Entry[K, V]](len(m))
 	for k, v := range m {
 		c.Add(collection.Entry[K, V]{Key: k, Value: v})
 	}
@@ -43,7 +43,7 @@ func Entries[M ~map[K]V, K comparable, V any](m M) collection.Collection[collect
 }
 
 func Keys[M ~map[K]V, K comparable, V any](m M) collection.Collection[K] {
-	c := collection.Empty[K]()
+	c := collection.Sized[K](len(m))
 	for k := range m {
 		c.Add(k)
 	}
