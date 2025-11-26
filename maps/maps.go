@@ -43,6 +43,7 @@ func Entries[M ~map[K]V, K comparable, V any](m M) collection.Collection[collect
 	return c
 }
 
+// Keys returns a Collection containing all keys from the map.
 func Keys[M ~map[K]V, K comparable, V any](m M) collection.Collection[K] {
 	c := collection.Sized[K](len(m))
 	for k := range m {
