@@ -29,7 +29,7 @@ func Copy[L ~map[K]V, R ~map[K]V, K comparable, V any](destination L, source R) 
 	std.Copy(destination, source)
 }
 
-// DeleteIf deletes any key/value pairs from m for which del returns true.
+// DeleteIf deletes any key/value pairs from m for which predicate returns true.
 func DeleteIf[M ~map[K]V, K comparable, V any](m M, predicate func(K, V) bool) {
 	std.DeleteFunc(m, predicate)
 }
