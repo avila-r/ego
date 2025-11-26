@@ -4,7 +4,9 @@ import (
 	std "maps"
 
 	"github.com/avila-r/ego/collection"
+	"github.com/avila-r/ego/entry"
 	"github.com/avila-r/ego/iterator"
+	"github.com/avila-r/ego/slice"
 )
 
 type Map[K comparable, V any] map[K]V
@@ -74,6 +76,19 @@ func From[K comparable, V any](m Map[K, V]) collection.Map[K, V] {
 	return base
 }
 
+func Order[M ~map[K]V, K comparable, V any](m M, comparator func(a, b collection.Entry[K, V]) int) *LinkedHashMap[K, V] {
+	entries := slice.New[collection.Entry[K, V]](0)
+	for k, v := range m {
+		entries = append(entries, entry.Of(k, v))
+	}
+
+	slice.SortBy(entries, func(a, b collection.Entry[K, V]) int {
+		return comparator(a, b)
+	})
+
+	return LinkedOf(entries...)
+}
+
 func New[K comparable, V any]() collection.Map[K, V] {
 	return EmptyHashMap[K, V]()
 }
@@ -90,16 +105,15 @@ func Of[K comparable, V any](entries ...collection.Entry[K, V]) collection.Map[K
 	return m
 }
 
-
-func NewLinked[K comparable, V any]() collection.Map[K, V] {
+func NewLinked[K comparable, V any]() *LinkedHashMap[K, V] {
 	return EmptyLinkedHashMap[K, V]()
 }
 
-func EmptyLinked[K comparable, V any]() collection.Map[K, V] {
+func EmptyLinked[K comparable, V any]() *LinkedHashMap[K, V] {
 	return NewLinked[K, V]()
 }
 
-func LinkedOf[K comparable, V any](entries ...collection.Entry[K, V]) collection.Map[K, V] {
+func LinkedOf[K comparable, V any](entries ...collection.Entry[K, V]) *LinkedHashMap[K, V] {
 	m := NewLinked[K, V]()
 	for _, entry := range entries {
 		m.Put(entry.Key, entry.Value)
