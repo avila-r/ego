@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/avila-r/ego/pointer"
 	"github.com/avila-r/ego/promise"
 	"github.com/stretchr/testify/assert"
 )
@@ -56,6 +57,52 @@ func Test_Of(t *testing.T) {
 	}
 }
 
+func Test_Supply(t *testing.T) {
+	type Case struct {
+		name     string
+		supplier func() (int, error)
+		expected int
+		hasError bool
+	}
+
+	cases := []Case{
+		{
+			name: "successful completion",
+			supplier: func() (int, error) {
+				return 42, nil
+			},
+			expected: 42,
+			hasError: false,
+		},
+		{
+			name: "completion with error",
+			supplier: func() (int, error) {
+				return 0, errors.New("test error")
+			},
+			expected: 0,
+			hasError: true,
+		},
+		{
+			name: "delayed completion",
+			supplier: func() (int, error) {
+				time.Sleep(50 * time.Millisecond)
+				return 100, nil
+			},
+			expected: 100,
+			hasError: false,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			p := promise.Supply(c.supplier)
+			val, err := p.Get()
+			assert.Equal(t, c.expected, val)
+			assert.Equal(t, c.hasError, err != nil)
+		})
+	}
+}
+
 func Test_Run(t *testing.T) {
 	type Case struct {
 		name     string
@@ -94,6 +141,31 @@ func Test_Completed(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			p := promise.Completed(c.value)
+			val, err := p.Get()
+			assert.Equal(t, c.expected, val)
+			assert.Nil(t, err)
+			assert.True(t, p.IsDone())
+			assert.True(t, p.IsSuccess())
+		})
+	}
+}
+
+func Test_Done(t *testing.T) {
+	type Case struct {
+		name     string
+		value    string
+		expected string
+	}
+
+	cases := []Case{
+		{"already done", "hello", "hello"},
+		{"empty string", "", ""},
+		{"number as string", "123", "123"},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			p := promise.Done(c.value)
 			val, err := p.Get()
 			assert.Equal(t, c.expected, val)
 			assert.Nil(t, err)
@@ -182,6 +254,55 @@ func Test_Then(t *testing.T) {
 	}
 }
 
+func Test_ThenWithConcurrency(t *testing.T) {
+	type Case struct {
+		name        string
+		initial     int
+		concurrency promise.Concurrency
+		mapper      func(int) int
+		expected    int
+	}
+
+	cases := []Case{
+		{
+			name:    "double value",
+			initial: 5,
+			mapper: func(v int) int {
+				return v * 2
+			},
+			concurrency: promise.Async,
+			expected:    10,
+		},
+		{
+			name:    "add constant",
+			initial: 10,
+			mapper: func(v int) int {
+				return v + 5
+			},
+			concurrency: promise.Sync,
+			expected:    15,
+		},
+		{
+			name:    "identity",
+			initial: 42,
+			mapper: func(v int) int {
+				return v
+			},
+			concurrency: promise.Async,
+			expected:    42,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			p := promise.Completed(c.initial).ThenWithConcurrency(c.concurrency, c.mapper)
+			val, err := p.Get()
+			assert.Nil(t, err)
+			assert.Equal(t, c.expected, val)
+		})
+	}
+}
+
 func Test_Map(t *testing.T) {
 	type Case struct {
 		name     string
@@ -214,6 +335,84 @@ func Test_Map(t *testing.T) {
 			p := promise.Completed(c.initial)
 			mapped := promise.Map(p, c.mapper)
 			val, err := mapped.Get()
+			assert.Nil(t, err)
+			assert.Equal(t, c.expected, val)
+		})
+	}
+}
+
+func Test_MapWithConcurrency(t *testing.T) {
+	type Case struct {
+		name        string
+		initial     *int
+		mapper      func(int) string
+		expected    string
+		concurrency promise.Concurrency
+	}
+
+	cases := []Case{
+		{
+			name:    "int to string async",
+			initial: pointer.Of(42),
+			mapper: func(v int) string {
+				return "value: 42"
+			},
+			expected:    "value: 42",
+			concurrency: promise.Async,
+		},
+		{
+			name:    "int to string sync",
+			initial: pointer.Of(42),
+			mapper: func(v int) string {
+				return "value: 42"
+			},
+			expected:    "value: 42",
+			concurrency: promise.Sync,
+		},
+		{
+			name:    "int to empty string sync",
+			initial: pointer.Of(0),
+			mapper: func(v int) string {
+				return ""
+			},
+			expected:    "",
+			concurrency: promise.Sync,
+		},
+		{
+			name:    "failure sync",
+			initial: nil,
+			mapper: func(v int) string {
+				return ""
+			},
+			expected:    "",
+			concurrency: promise.Sync,
+		},
+		{
+			name:    "failure async",
+			initial: nil,
+			mapper: func(v int) string {
+				return ""
+			},
+			expected:    "",
+			concurrency: promise.Async,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			p := promise.Of(func() (int, error) {
+				if c.initial == nil {
+					return 0, errors.New("not completed")
+				}
+				return *c.initial, nil
+			})
+
+			mapped := promise.MapWithConcurrency(p, c.concurrency, c.mapper)
+			val, err := mapped.Get()
+			if c.initial == nil {
+				assert.NotNil(t, err)
+				return
+			}
 			assert.Nil(t, err)
 			assert.Equal(t, c.expected, val)
 		})
@@ -260,6 +459,85 @@ func Test_Compose(t *testing.T) {
 	}
 }
 
+func Test_ComposeWithConcurrency(t *testing.T) {
+	type Case struct {
+		name        string
+		initial     *int
+		composer    func(int) *promise.Promise[string]
+		expected    string
+		concurrency promise.Concurrency
+	}
+
+	cases := []Case{
+		{
+			name:    "chain two promises (sync)",
+			initial: pointer.Of(5),
+			composer: func(v int) *promise.Promise[string] {
+				return promise.Of(func() (string, error) {
+					return "result: 5", nil
+				})
+			},
+			expected:    "result: 5",
+			concurrency: promise.Sync,
+		},
+		{
+			name:    "chain with completed promise (async)",
+			initial: pointer.Of(10),
+			composer: func(v int) *promise.Promise[string] {
+				return promise.Completed("done")
+			},
+			expected:    "done",
+			concurrency: promise.Async,
+		},
+		{
+			name:    "error (async)",
+			initial: nil,
+			composer: func(v int) *promise.Promise[string] {
+				return promise.Of(func() (string, error) {
+					return "", errors.New("not completed")
+				})
+			},
+			expected:    "",
+			concurrency: promise.Async,
+		},
+		{
+			name:    "error (sync)",
+			initial: nil,
+			composer: func(v int) *promise.Promise[string] {
+				return promise.Of(func() (string, error) {
+					return "", errors.New("not completed")
+				})
+			},
+			expected:    "",
+			concurrency: promise.Sync,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			p := promise.Of(func() (int, error) {
+				if c.initial == nil {
+					return 0, errors.New("not completed")
+				}
+				return *c.initial, nil
+			})
+
+			composed := promise.ComposeWithConcurrency(p, c.concurrency, c.composer)
+
+			val, err := composed.Get()
+			if c.initial == nil {
+				println("initial is nil")
+				assert.Empty(t, val)
+				assert.NotNil(t, err)
+				return
+			}
+
+			assert.Nil(t, err)
+			assert.Equal(t, c.expected, val)
+		})
+	}
+}
+
 func Test_ThenAccept(t *testing.T) {
 	type Case struct {
 		name    string
@@ -285,6 +563,49 @@ func Test_ThenAccept(t *testing.T) {
 	}
 }
 
+func Test_ThenAcceptWithConcurrency(t *testing.T) {
+	type Case struct {
+		name        string
+		initial     *int
+		concurrency promise.Concurrency
+	}
+
+	cases := []Case{
+		{"consume value", pointer.Of(42), promise.Async},
+		{"consume zero", pointer.Of(0), promise.Sync},
+		{"uncompleted async", nil, promise.Async},
+		{"uncompleted sync", nil, promise.Sync},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			consumed := 0
+
+			p := promise.Of(func() (int, error) {
+				if c.initial == nil {
+					return 0, errors.New("not completed")
+				}
+
+				return *c.initial, nil
+			})
+
+			void := p.ThenAcceptWithConcurrency(c.concurrency, func(v int) {
+				consumed = v
+			})
+
+			_, err := void.Get()
+
+			if c.initial == nil {
+				assert.NotNil(t, err)
+				return
+			}
+
+			assert.Nil(t, err)
+			assert.Equal(t, c.initial, pointer.Of(consumed))
+		})
+	}
+}
+
 func Test_ThenRun(t *testing.T) {
 	type Case struct {
 		name string
@@ -302,6 +623,35 @@ func Test_ThenRun(t *testing.T) {
 				executed = true
 			})
 			_, err := voidPromise.Get()
+			assert.Nil(t, err)
+			assert.True(t, executed)
+		})
+	}
+}
+
+func Test_ThenRunWithConcurrency(t *testing.T) {
+	type Case struct {
+		name        string
+		concurrency promise.Concurrency
+	}
+
+	cases := []Case{
+		{"execute action sync", promise.Sync},
+		{"execute action async", promise.Async},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			executed := false
+
+			p := promise.Completed(42)
+
+			void := p.ThenRunWithConcurrency(c.concurrency, func() {
+				executed = true
+			})
+
+			_, err := void.Get()
+
 			assert.Nil(t, err)
 			assert.True(t, executed)
 		})
@@ -345,6 +695,77 @@ func Test_Exceptionally(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			p := promise.Of(c.supplier).Exceptionally(c.handler)
+			val, err := p.Get()
+			assert.Equal(t, c.expected, val)
+			assert.Equal(t, c.shouldError, err != nil)
+		})
+	}
+}
+
+func Test_ExceptionallyWithConcurrency(t *testing.T) {
+	type Case struct {
+		name        string
+		supplier    func() (int, error)
+		handler     func(error) int
+		expected    int
+		shouldError bool
+		concurrency promise.Concurrency
+	}
+
+	cases := []Case{
+		{
+			name: "recover from error (async)",
+			supplier: func() (int, error) {
+				return 0, errors.New("failed")
+			},
+			handler: func(err error) int {
+				return 99
+			},
+			expected:    99,
+			shouldError: false,
+			concurrency: promise.Async,
+		},
+		{
+			name: "no error to handle (async)",
+			supplier: func() (int, error) {
+				return 42, nil
+			},
+			handler: func(err error) int {
+				return 0
+			},
+			expected:    42,
+			shouldError: false,
+			concurrency: promise.Async,
+		},
+		{
+			name: "recover from error (sync)",
+			supplier: func() (int, error) {
+				return 0, errors.New("failed")
+			},
+			handler: func(err error) int {
+				return 99
+			},
+			expected:    99,
+			shouldError: false,
+			concurrency: promise.Sync,
+		},
+		{
+			name: "no error to handle (sync)",
+			supplier: func() (int, error) {
+				return 42, nil
+			},
+			handler: func(err error) int {
+				return 0
+			},
+			expected:    42,
+			shouldError: false,
+			concurrency: promise.Sync,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			p := promise.Of(c.supplier).ExceptionallyWithConcurrency(c.concurrency, c.handler)
 			val, err := p.Get()
 			assert.Equal(t, c.expected, val)
 			assert.Equal(t, c.shouldError, err != nil)
@@ -431,6 +852,85 @@ func Test_Handle(t *testing.T) {
 	}
 }
 
+func Test_HandleWithConcurrency(t *testing.T) {
+	type Case struct {
+		name        string
+		supplier    func() (int, error)
+		handler     func(int, error) string
+		expected    string
+		concurrency promise.Concurrency
+	}
+
+	cases := []Case{
+		{
+			name: "handle success (async)",
+			supplier: func() (int, error) {
+				return 42, nil
+			},
+			handler: func(val int, err error) string {
+				if err != nil {
+					return "error"
+				}
+				return "success: 42"
+			},
+			expected:    "success: 42",
+			concurrency: promise.Async,
+		},
+		{
+			name: "handle error (async)",
+			supplier: func() (int, error) {
+				return 0, errors.New("failed")
+			},
+			handler: func(val int, err error) string {
+				if err != nil {
+					return "error: failed"
+				}
+				return "success"
+			},
+			expected:    "error: failed",
+			concurrency: promise.Async,
+		},
+		{
+			name: "handle success (sync)",
+			supplier: func() (int, error) {
+				return 42, nil
+			},
+			handler: func(val int, err error) string {
+				if err != nil {
+					return "error"
+				}
+				return "success: 42"
+			},
+			expected:    "success: 42",
+			concurrency: promise.Sync,
+		},
+		{
+			name: "handle error (sync)",
+			supplier: func() (int, error) {
+				return 0, errors.New("failed")
+			},
+			handler: func(val int, err error) string {
+				if err != nil {
+					return "error: failed"
+				}
+				return "success"
+			},
+			expected:    "error: failed",
+			concurrency: promise.Sync,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			p := promise.Of(c.supplier)
+			handled := promise.HandleWithConcurrency(p, c.concurrency, c.handler)
+			val, err := handled.Get()
+			assert.Nil(t, err)
+			assert.Equal(t, c.expected, val)
+		})
+	}
+}
+
 func Test_Join(t *testing.T) {
 	type Case struct {
 		name        string
@@ -475,6 +975,7 @@ func Test_Join(t *testing.T) {
 
 func Test_Complete(t *testing.T) {
 	type Case struct {
+		promise  *promise.Promise[int]
 		name     string
 		value    int
 		expected int
@@ -482,41 +983,154 @@ func Test_Complete(t *testing.T) {
 	}
 
 	cases := []Case{
-		{"complete empty promise", 42, 42, true},
-		{"complete with zero", 0, 0, true},
+		{promise.Empty[int](), "complete empty promise", 42, 42, true},
+		{promise.Empty[int](), "complete with zero", 0, 0, true},
+		{promise.Completed(2), "already completed", 32, 2, false},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			p := promise.Empty[int]()
-			ok := p.Complete(c.value)
+			ok := c.promise.Complete(c.value)
 			assert.Equal(t, c.success, ok)
-			val, err := p.Get()
+			val, err := c.promise.Get()
 			assert.Nil(t, err)
 			assert.Equal(t, c.expected, val)
 		})
 	}
 }
 
+func Test_Cancel(t *testing.T) {
+	type Case struct {
+		name        string
+		promise     *promise.Promise[int]
+		success     bool
+		expectState promise.State
+	}
+
+	cases := []Case{
+		{
+			name:        "cancel running promise",
+			promise:     promise.Empty[int](),
+			success:     true,
+			expectState: promise.StateCancelled,
+		},
+		{
+			name: "cancel already cancelled",
+			promise: func() *promise.Promise[int] {
+				p := promise.Empty[int]()
+				p.Cancel()
+				return p
+			}(),
+			success:     false,
+			expectState: promise.StateCancelled,
+		},
+		{
+			name: "cancel completed promise has no effect",
+			promise: func() *promise.Promise[int] {
+				p := promise.Empty[int]()
+				p.Complete(10)
+				return p
+			}(),
+			success:     false,
+			expectState: promise.StateCompleted,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			// capture old state before cancelling
+			oldState := c.promise.State()
+
+			c.promise.Cancel()
+
+			now := c.promise.State()
+
+			if c.success {
+				assert.Equal(t, c.expectState, now)
+			} else {
+				// if cancel was not supposed to have effect, state stays as it was
+				assert.Equal(t, oldState, now)
+			}
+
+			// check Get() behavior
+			_, err := c.promise.Get()
+
+			if now == promise.StateCancelled {
+				assert.Error(t, err, "Get() should fail for cancelled promise")
+				assert.True(t, c.promise.IsCancelled())
+			} else {
+				assert.NoError(t, err, "Get() should succeed when not cancelled")
+			}
+		})
+	}
+}
+
 func Test_CompleteExceptionally(t *testing.T) {
 	type Case struct {
+		promise *promise.Promise[int]
 		name    string
 		err     error
 		success bool
 	}
 
 	cases := []Case{
-		{"complete with error", errors.New("test error"), true},
-		{"complete with nil error", nil, true},
+		{promise.Empty[int](), "complete with error", errors.New("test error"), true},
+		{promise.Empty[int](), "complete with nil error", nil, true},
+		{promise.Completed(42), "already completed", errors.New("test error"), false},
 	}
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			promise := promise.Empty[int]()
-
-			ok := promise.CompleteExceptionally(c.err)
+			ok := c.promise.CompleteExceptionally(c.err)
 
 			assert.Equal(t, c.success, ok)
+			if c.success {
+				assert.True(t, c.promise.IsCompletedExceptionally())
+			}
+		})
+	}
+}
+
+func Test_Context(t *testing.T) {
+	t.Run("Context is not nil", func(t *testing.T) {
+		p := promise.Empty[int]()
+		ctx := p.Context()
+		assert.NotNil(t, ctx, "Context should not be nil")
+	})
+
+	t.Run("Context reflects cancellation", func(t *testing.T) {
+		p, cancel := promise.WithCancel[int]()
+
+		defer cancel()
+
+		ctx := p.Context()
+
+		assert.NotNil(t, ctx)
+
+		cancel()
+
+		select {
+		case <-ctx.Done():
+		case <-time.After(time.Second):
+			t.Error("Expected context to be cancelled")
+		}
+	})
+}
+
+func Test_State_String(t *testing.T) {
+	cases := []struct {
+		state    promise.State
+		expected string
+	}{
+		{promise.StateRunning, "Running"},
+		{promise.StateCompleted, "Success"},
+		{promise.StateFailed, "Failed"},
+		{promise.StateCancelled, "Cancelled"},
+	}
+
+	for _, c := range cases {
+		t.Run(c.expected, func(t *testing.T) {
+			assert.Equal(t, c.expected, c.state.String())
 		})
 	}
 }
@@ -552,6 +1166,43 @@ func Test_Timeout(t *testing.T) {
 			}).Timeout(c.duration)
 
 			_, err := p.Get()
+			assert.Equal(t, c.shouldError, err != nil)
+		})
+	}
+}
+
+func Test_Threshold(t *testing.T) {
+	type Case struct {
+		name        string
+		duration    time.Duration
+		delay       time.Duration
+		shouldError bool
+	}
+
+	cases := []Case{
+		{
+			name:        "timeout before completion",
+			duration:    50 * time.Millisecond,
+			delay:       200 * time.Millisecond,
+			shouldError: true,
+		},
+		{
+			name:        "complete before timeout",
+			duration:    200 * time.Millisecond,
+			delay:       50 * time.Millisecond,
+			shouldError: false,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			p := promise.Of(func() (int, error) {
+				time.Sleep(c.delay)
+				return 42, nil
+			}).Threshold(c.duration)
+
+			_, err := p.Get()
+
 			assert.Equal(t, c.shouldError, err != nil)
 		})
 	}
@@ -612,6 +1263,25 @@ func Test_IsDone(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			assert.Equal(t, c.expected, c.promise.IsDone())
+		})
+	}
+}
+
+func Test_IsCompleted(t *testing.T) {
+	type Case struct {
+		name     string
+		promise  *promise.Promise[int]
+		expected bool
+	}
+
+	cases := []Case{
+		{"completed promise", promise.Completed(42), true},
+		{"empty promise", promise.Empty[int](), false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			assert.Equal(t, c.expected, c.promise.IsCompleted())
 		})
 	}
 }
@@ -699,7 +1369,7 @@ func Test_State(t *testing.T) {
 
 	cases := []Case{
 		{"running promise", promise.Empty[int](), promise.StateRunning},
-		{"successful promise", completedP, promise.StateSuccess},
+		{"successful promise", completedP, promise.StateCompleted},
 		{"failed promise", failedP, promise.StateFailed},
 	}
 
