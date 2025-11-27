@@ -1,6 +1,8 @@
 package iterator
 
-import "github.com/avila-r/ego/stream"
+import (
+	"github.com/avila-r/ego/stream"
+)
 
 type Iterable[T any] interface {
 	ForEach(func(T))
@@ -23,6 +25,14 @@ type Iterator[T any] interface {
 
 	// Reset resets the iterator to the beginning
 	Reset()
+
+	Remaining() int
+
+	Collect() []T
+
+	ForEach(action func(T))
+
+	Filter(predicate func(T) bool) Iterator[T]
 }
 
 // SliceIterator is a default iterator implementation for slices
@@ -56,7 +66,7 @@ func (it *SliceIterator[T]) HasNext() bool {
 // Next returns the next element and advances the iterator
 func (it *SliceIterator[T]) Next() T {
 	if !it.HasNext() {
-		panic("iterator: no more elements")
+		ErrExhausted.Panic()
 	}
 	element := it.elements[it.index]
 	it.index++
@@ -66,7 +76,7 @@ func (it *SliceIterator[T]) Next() T {
 // Peek returns the next element without advancing the iterator
 func (it *SliceIterator[T]) Peek() T {
 	if !it.HasNext() {
-		panic("iterator: no more elements")
+		ErrExhausted.Panic()
 	}
 	return it.elements[it.index]
 }

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/avila-r/ego/list"
+	"github.com/avila-r/ego/slice"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,7 +24,7 @@ func Test_Add(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			l := list.EmptyArrayList[int]()
+			l := list.NewArrayList[int]()
 			l.Add(c.initial...)
 			l.Add(c.toAdd...)
 			assert.Equal(t, c.expected, l.Items())
@@ -186,6 +187,154 @@ func Test_Items(t *testing.T) {
 			l := list.EmptyArrayList[int]()
 			l.Add(c.init...)
 			assert.Equal(t, c.expected, l.Items())
+		})
+	}
+}
+
+func Test_Elements(t *testing.T) {
+	type Case struct {
+		name     string
+		initial  []int
+		expected []int
+	}
+
+	cases := []Case{
+		{"elements from non-empty list", []int{1, 2, 3}, []int{1, 2, 3}},
+		{"elements from empty list", []int{}, []int{}},
+		{"elements single", []int{9}, []int{9}},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			l := list.Empty[int]()
+			l.Add(c.initial...)
+			assert.Equal(t, c.expected, l.Elements())
+		})
+	}
+}
+
+func Test_ForEach(t *testing.T) {
+	type Case struct {
+		name     string
+		input    []int
+		expected int
+	}
+
+	cases := []Case{
+		{"sum of elements", []int{1, 2, 3}, 6},
+		{"sum of empty list", []int{}, 0},
+		{"sum single", []int{10}, 10},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			l := list.EmptyArrayList[int]()
+			l.Add(c.input...)
+
+			sum := 0
+			l.ForEach(func(v int) { sum += v })
+
+			assert.Equal(t, c.expected, sum)
+		})
+	}
+}
+
+func Test_IsEmpty(t *testing.T) {
+	type Case struct {
+		name     string
+		initial  []int
+		expected bool
+	}
+
+	cases := []Case{
+		{"empty list", []int{}, true},
+		{"non-empty list", []int{1}, false},
+		{"multiple elements", []int{1, 2}, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			l := list.EmptyArrayList[int]()
+			l.Add(c.initial...)
+			assert.Equal(t, c.expected, l.IsEmpty())
+		})
+	}
+}
+
+func Test_Of(t *testing.T) {
+	type Case struct {
+		name     string
+		input    []int
+		expected []int
+	}
+
+	cases := []Case{
+		{"of empty", []int{}, []int{}},
+		{"of single", []int{5}, []int{5}},
+		{"of multiple", []int{1, 2, 3}, []int{1, 2, 3}},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			l := list.Of(c.input...)
+			assert.Equal(t, c.expected, l.Elements())
+		})
+	}
+}
+
+func Test_Iterator(t *testing.T) {
+	type Case struct {
+		name     string
+		input    []int
+		expected []int
+	}
+
+	cases := []Case{
+		{"empty list", []int{}, []int{}},
+		{"single element", []int{1}, []int{1}},
+		{"multiple elements", []int{1, 2, 3}, []int{1, 2, 3}},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			l := list.NewArrayList[int]()
+
+			l.Add(c.input...)
+
+			it := l.Iterator()
+
+			result := slice.Empty[int]()
+			for it.HasNext() {
+				result = append(result, it.Next())
+			}
+
+			assert.Equal(t, c.expected, result)
+		})
+	}
+}
+
+func Test_Stream(t *testing.T) {
+	type Case struct {
+		name     string
+		input    []int
+		expected []int
+	}
+
+	cases := []Case{
+		{"empty list", []int{}, []int{}},
+		{"single element", []int{10}, []int{10}},
+		{"multiple elements", []int{1, 2, 3}, []int{1, 2, 3}},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			l := list.NewArrayList[int]()
+			l.Add(c.input...)
+
+			s := l.Stream()
+			out := s.ToSlice() // change if needed
+
+			assert.Equal(t, c.expected, out)
 		})
 	}
 }
