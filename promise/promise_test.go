@@ -526,7 +526,6 @@ func Test_ComposeWithConcurrency(t *testing.T) {
 
 			val, err := composed.Get()
 			if c.initial == nil {
-				println("initial is nil")
 				assert.Empty(t, val)
 				assert.NotNil(t, err)
 				return
