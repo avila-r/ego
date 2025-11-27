@@ -23,6 +23,14 @@ type Iterator[T any] interface {
 
 	// Reset resets the iterator to the beginning
 	Reset()
+
+	Remaining() int
+
+	Collect() []T
+
+	ForEach(action func(T))
+
+	Filter(predicate func(T) bool) Iterator[T]
 }
 
 // SliceIterator is a default iterator implementation for slices
