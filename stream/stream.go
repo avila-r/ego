@@ -157,6 +157,7 @@ func (s Stream[T]) ForEachOrdered(consumer function.Consumer[T]) {
 	s.Sort().ForEach(consumer)
 }
 
+// ToSlice returns a copy of the stream's elements as a slice
 func (s Stream[T]) ToSlice() []T {
 	target := make([]T, len(s.elements))
 	copy(target, s.elements)
