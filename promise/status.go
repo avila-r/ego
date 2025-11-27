@@ -5,11 +5,18 @@ type State int
 
 const (
 	StateRunning State = iota
-	StateSuccess
+	StateCompleted
 	StateFailed
 	StateCancelled
 )
 
+var labels = []string{
+	"Running",
+	"Success",
+	"Failed",
+	"Cancelled",
+}
+
 func (s State) String() string {
-	return []string{"Running", "Success", "Failed", "Cancelled"}[s]
+	return labels[s]
 }
