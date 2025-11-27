@@ -2,7 +2,6 @@ package promise
 
 import (
 	"context"
-	"errors"
 	"sync"
 	"time"
 )
@@ -80,11 +79,16 @@ func Of[T any](supplier Supplier[T]) *Promise[T] {
 		if err != nil {
 			p.state = StateFailed
 		} else {
-			p.state = StateSuccess
+			p.state = StateCompleted
 		}
 	}()
 
 	return p
+}
+
+func WithCancel[T any]() (*Promise[T], context.CancelFunc) {
+	p := Empty[T]()
+	return p, p.cancel
 }
 
 // Supply is an alias for Of
@@ -98,7 +102,7 @@ func Completed[T any](value T) *Promise[T] {
 	p := &Promise[T]{
 		done:   make(chan Void),
 		value:  value,
-		state:  StateSuccess,
+		state:  StateCompleted,
 		ctx:    ctx,
 		cancel: cancel,
 	}
@@ -159,9 +163,13 @@ func (p *Promise[T]) ThenAcceptWithConcurrency(concurrency Concurrency, consumer
 	<-p.done
 	p.mu.RLock()
 	defer p.mu.RUnlock()
-	if p.err != nil {
-		return Completed(Void{})
+
+	if err := p.err; err != nil {
+		return Of(func() (Void, error) {
+			return Void{}, err
+		})
 	}
+
 	consumer(p.value)
 	return Completed(Void{})
 }
@@ -210,8 +218,9 @@ func MapWithConcurrency[T any, R any](p *Promise[T], concurrency Concurrency, ma
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 	if p.err != nil {
-		var zero R
-		return Completed(zero)
+		return Of(func() (r R, err error) {
+			return r, p.err
+		})
 	}
 	return Completed(mapper(p.value))
 }
@@ -245,14 +254,16 @@ func ComposeWithConcurrency[T any, R any](p *Promise[T], concurrency Concurrency
 
 	<-p.done
 	p.mu.RLock()
+
 	if p.err != nil {
 		p.mu.RUnlock()
-		var zero R
-		return Completed(zero)
+		return Of(func() (r R, err error) {
+			return r, p.err
+		})
 	}
+
 	val := p.value
 	p.mu.RUnlock()
-
 	return composer(val)
 }
 
@@ -340,7 +351,7 @@ func (p *Promise[T]) Complete(value T) bool {
 	}
 
 	p.value = value
-	p.state = StateSuccess
+	p.state = StateCompleted
 	p.close()
 	return true
 }
@@ -367,7 +378,7 @@ func (p *Promise[T]) Timeout(duration time.Duration) *Promise[T] {
 		case <-p.done:
 			return
 		case <-time.After(duration):
-			p.CompleteExceptionally(errors.New("promise timeout"))
+			p.CompleteExceptionally(ErrTimeout)
 		}
 	}()
 	return p
@@ -407,7 +418,7 @@ func (p *Promise[T]) IsCompleted() bool {
 func (p *Promise[T]) IsSuccess() bool {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
-	return p.state == StateSuccess
+	return p.state == StateCompleted
 }
 
 // IsCancelled returns true if the Promise was cancelled
@@ -442,6 +453,7 @@ func (p *Promise[T]) Cancel() {
 	defer p.mu.Unlock()
 	if p.state == StateRunning {
 		p.state = StateCancelled
+		p.err = ErrCancelled
 		p.cancel()
 		p.close()
 	}
