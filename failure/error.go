@@ -418,7 +418,7 @@ func (e *Failure) Extends(c *ErrorClass) bool {
 		}
 
 		cause = func() *Failure {
-			raw := e.cause
+			raw := cause.cause
 			for raw != nil {
 				typed := Cast(raw)
 				if typed != nil {
