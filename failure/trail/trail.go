@@ -29,9 +29,12 @@ func New() *Trail {
 		if !ok {
 			break
 		}
+
 		file = func(path string) string {
 			dirs := filepath.SplitList(os.Getenv("GOPATH"))
-			sort.Stable(paths(filepath.SplitList(os.Getenv("GOPATH"))))
+
+			sort.Stable(paths(dirs))
+
 			for _, dir := range dirs {
 				srcdir := filepath.Join(dir, "src")
 				rel, err := filepath.Rel(srcdir, path)
@@ -39,6 +42,7 @@ func New() *Trail {
 					return rel
 				}
 			}
+
 			return path
 		}(file)
 
