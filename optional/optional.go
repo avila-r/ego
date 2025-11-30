@@ -1,6 +1,6 @@
 package optional
 
-import "github.com/avila-r/failure"
+import "github.com/avila-r/ego/failure"
 
 type Optional[T any] struct {
 	value *T
@@ -51,7 +51,7 @@ func (o *Optional[T]) Set(value T) {
 	o.value = &value
 }
 
-func (o *Optional[T]) Take() (*T, *failure.Error) {
+func (o *Optional[T]) Take() (*T, failure.Error) {
 	if o.IsEmpty() {
 		return nil, ErrNoneValueTaken
 	}

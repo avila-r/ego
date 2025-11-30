@@ -1,6 +1,6 @@
 package result
 
-import "github.com/avila-r/failure"
+import "github.com/avila-r/ego/failure"
 
 type Result[T any] struct {
 	value *T
@@ -74,7 +74,7 @@ func (r *Result[T]) Unwrap() T {
 	return *r.value
 }
 
-func (o *Result[T]) Take() (*T, *failure.Error) {
+func (o *Result[T]) Take() (*T, failure.Error) {
 	if o.IsEmpty() {
 		println("taking from empty result")
 		return nil, ErrNoneValueTaken

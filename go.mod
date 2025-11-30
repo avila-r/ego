@@ -3,7 +3,6 @@ module github.com/avila-r/ego
 go 1.25.4
 
 require (
-	github.com/avila-r/failure v1.0.1
 	github.com/stretchr/testify v1.11.1
 )
 
