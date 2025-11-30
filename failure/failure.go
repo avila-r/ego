@@ -395,11 +395,12 @@ func InitializeStackTraceTransformer(subtransformer stacktrace.FilePathTransform
 	defer stacktrace.Transformer.Mu.Unlock()
 
 	old := stacktrace.Transformer.Transform.Load().(stacktrace.FilePathTransformer)
-	stacktrace.Transformer.Transform.Store(subtransformer)
 
 	if stacktrace.Transformer.Initialized {
 		return old, InitializationFailed.New("stack trace transformer was already set up: %#v", old)
 	}
+
+	stacktrace.Transformer.Transform.Store(subtransformer)
 
 	stacktrace.Transformer.Initialized = true
 	return nil, nil
