@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/avila-r/ego/result"
-	"github.com/avila-r/failure"
+	"github.com/avila-r/ego/failure"
 	"github.com/stretchr/testify/assert"
 )
 
