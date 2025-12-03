@@ -15,9 +15,9 @@ func Evaluated(ctx Context) Context {
 				ctx[key] = value
 			} else if val.Type().NumIn() != 0 || val.Type().NumOut() != 1 {
 				ctx[key] = value
+			} else {
+				ctx[key] = val.Call([]reflect.Value{})[0].Interface()
 			}
-
-			ctx[key] = val.Call([]reflect.Value{})[0].Interface()
 		}
 	}
 

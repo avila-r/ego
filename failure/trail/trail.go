@@ -226,7 +226,7 @@ func from(frame step) []string {
 
 var (
 	mutex sync.RWMutex
-	cache map[string]paths
+	cache = make(map[string]paths)
 )
 
 func read(path string) ([]string, bool) {
