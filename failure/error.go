@@ -236,7 +236,7 @@ func (o *Failure) Sources() string {
 		func() []string {
 			trails := make([]string, len(blocks))
 			for i := range blocks {
-				trails[i] = strings.Join(blocks[1], "\n")
+				trails[i] = strings.Join(blocks[i], "\n")
 			}
 			return trails
 		}(),
